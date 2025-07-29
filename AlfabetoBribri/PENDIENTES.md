@@ -6,10 +6,10 @@ Este archivo documenta las tareas pendientes para el proyecto.
 
 ## Tareas por Hacer
 
-- [ X ] **Reemplazar comentarios**  
+- [X] **Reemplazar comentarios**  
   Cambiar todos los `//` por `[ ]` en la pronunciación de la base de datos para mayor correctitud.
 
-- [ ] **Quitar audio en equivalencias**  
+- [X] **Quitar audio en equivalencias**  
   Eliminar los elementos de audio que aparecen en la sección de equivalencias.
 
 - [ ] **Esperar imágenes de Laura**  
