@@ -1,12 +1,97 @@
-# React + Vite
+# 🎮 Web Educativa - Vocabulario Bribrí
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web interactiva desarrollada con **React** y **Chakra UI**, diseñada para aprender y reforzar vocabulario de la **Lengua Indigena Bribrí**.  
+Incluye distintos modos de juego con preguntas aleatorias basadas en **imágenes** y **audios**, conectándose a una base de datos en **Supabase**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Funcionalidades
 
-## Expanding the ESLint configuration
+- **Exploración del alfabeto:**
+  - Visualiza **vocales, consonantes y tonos** con **3 ejemplos** por letra (imagen y audio).
+- **Juego interactivo:**
+  - **3 Modos de juego:**
+    - 🖼️ **Modo 1**: Preguntas basadas en imágenes.
+    - 🔊 **Modo 2**: Preguntas basadas en audios.
+    - 🎲 **Modo 3**: Preguntas mixtas (imagen o audio al azar).
+  - **Preguntas dinámicas:** Se generan 10 preguntas aleatorias en cada partida.
+  - **Opciones múltiples:** 1 respuesta correcta + 3 incorrectas.
+  - **Retroalimentación inmediata** y animación **confeti** al acertar.
+  - **Progreso y puntaje** visibles en todo momento.
+  - **Pantalla final** con resumen, motivación y opción de volver a jugar.
+- **Equivalencias AFI:**
+  - Consulta el **Alfabeto Fonético Internacional (AFI)** con su **pronunciación**.
+- **Historia de la lengua:**
+  - Breve reseña sobre la **historia y contexto cultural** de la lengua Bribrí.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠 Tecnologías utilizadas
+
+- [React](https://reactjs.org/) con Hooks y React Router.
+- [Chakra UI](https://chakra-ui.com/) para la interfaz y estilos.
+- [Supabase](https://supabase.com/) como backend y base de datos.
+- [React Icons](https://react-icons.github.io/react-icons/) para iconografía.
+- [react-confetti](https://www.npmjs.com/package/react-confetti) para animaciones.
+
+---
+
+## 📂 Estructura del proyecto
+```bash
+src/
+├─ Alphabet/
+│ ├─ Components/
+│ │ ├─ AFICard.jsx
+│ │ └─ LetterCard.jsx
+│ ├─ Screens/
+│ │ ├─ AFIEquivalencies.jsx
+│ │ ├─ Alphabet.jsx
+│ │ └─ Character.jsx
+├─ Game/
+│ ├─ Components/
+│ │ ├─ OptionList.jsx
+│ │ └─ QuestionDisplay.jsx
+│ ├─ Screens/
+│ │ ├─ Game.jsx
+│ │ └─ GameHome.jsx
+├─ Shared/
+│ ├─ Components/
+│ │ ├─ Header.jsx
+│ │ └─ Footer.jsx
+│ ├─ Screens/
+│ │ ├─ Hisotry.jsx
+│ │ └─ Home.jsx
+├─ App.jsx
+├─ main.jsx
+├─ supabaseClient.js
+└─ theme.js
+```
+---
+
+## 📋 Requisitos previos
+
+- **Node.js** >= 14.x
+- **npm** o **yarn**
+- Cuenta en **Supabase** con tabla `Ejemplos` que tenga las columnas:
+  - `word` (texto)
+  - `audio` (URL o referencia a archivo de audio)
+  - `image` (URL o referencia a archivo de imagen)
+
+---
+
+## 🚀 Instalación y ejecución
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/lenguasytradiciones/Alfabeto-bribri-2.0-web-.git
+```
+
+### 2. Instalar dependencias
+```bash
+npm install
+```
+
+### 3. Ejecutar la aplicación
+```bash
+npm run dev
+```
