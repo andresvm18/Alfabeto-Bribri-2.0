@@ -1,0 +1,196 @@
+import {
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  VStack,
+  Link,
+  IconButton,
+  useDisclosure,
+  Stack,
+  Container,
+  Text,
+  Divider,
+} from '@chakra-ui/react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
+
+function Header() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const location = useLocation();
+
+  const links = [
+    { label: 'Alfabeto', to: '/alfabeto' },
+    { label: 'Aprende Jugando', to: '/aprende' },
+    { label: 'Equivalencias AFI', to: '/equivalencias-afi' },
+    { label: 'Historia', to: '/historia' },
+  ];
+
+  const isActiveLink = (to) => location.pathname === to;
+
+  return (
+    <Box 
+      bg="#00C0F3" 
+      color="black"  // Cambiado a negro para el texto general
+      boxShadow="0 4px 12px rgba(0, 93, 164, 0.15)"
+      position="sticky"
+      top="0"
+      zIndex="1000"
+      userSelect="none"
+      width="100%"
+    >
+      <Box maxW="100%" mx="auto" px={{ base: 4, md: 6, lg: 8 }}>
+        <Flex h={20} alignItems="center" justifyContent="space-between">
+          {/* Logo/Título */}
+          <HStack spacing={8} align="center" flex="1">
+            <Link
+              as={RouterLink}
+              to="/"
+              _hover={{ textDecoration: 'none', transform: 'scale(1.02)' }}
+              transition="all 0.2s ease"
+              color="black"  // Asegura que el link herede el color negro
+            >
+              <VStack spacing={0} align="start">
+                <Heading 
+                  size="lg" 
+                  fontWeight="bold"
+                  letterSpacing="tight"
+                  color="black"  // Cambiado a negro
+                >
+                  Alfabeto Bribrí
+                </Heading>
+              </VStack>
+            </Link>
+
+            {/* Navegación Desktop */}
+            <HStack
+              as="nav"
+              spacing={0}
+              display={{ base: 'none', md: 'flex' }}
+              ml={8}
+            >
+              {links.map((link) => (
+                <Link
+                  key={link.to}
+                  as={RouterLink}
+                  to={link.to}
+                  px={4}
+                  py={2}
+                  mx={1}
+                  borderRadius="md"
+                  fontWeight="medium"
+                  fontSize="sm"
+                  position="relative"
+                  bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}  // Cambiado a fondo negro con opacidad
+                  color="black"  // Cambiado a negro
+                  _hover={{ 
+                    textDecoration: 'none',
+                    bg: 'rgba(0,0,0,0.1)',
+                    color: 'black',
+                    transform: 'translateY(-1px)'
+                  }}
+                  _active={{
+                    transform: 'translateY(0px)'
+                  }}
+                  transition="all 0.2s ease"
+                >
+                  {link.label}
+                  {isActiveLink(link.to) && (
+                    <Box
+                      position="absolute"
+                      bottom="-2px"
+                      left="50%"
+                      transform="translateX(-50%)"
+                      w="80%"
+                      h="2px"
+                      bg="black"  // Cambiado a negro
+                      borderRadius="full"
+                    />
+                  )}
+                </Link>
+              ))}
+            </HStack>
+          </HStack>
+
+          {/* Botón hamburguesa móvil */}
+          <IconButton
+            size="lg"
+            icon={isOpen ? <CloseIcon boxSize={4} color="black" /> : <HamburgerIcon boxSize={5} color="black" />}  // Iconos en negro
+            aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+            display={{ md: 'none' }}
+            onClick={isOpen ? onClose : onOpen}
+            bg="rgba(0,0,0,0.1)"  // Fondo negro con opacidad
+            border="1px solid rgba(0,0,0,0.2)"  // Borde negro
+            color="black"  // Color negro
+            _hover={{ 
+              bg: 'rgba(0,0,0,0.2)',
+              transform: 'scale(1.05)'
+            }}
+            _active={{
+              transform: 'scale(0.95)'
+            }}
+            transition="all 0.2s ease"
+          />
+        </Flex>
+      </Box>
+
+      {/* Menú móvil desplegable */}
+      {isOpen && (
+        <Box 
+          display={{ md: 'none' }}
+          bg="#00C0F3"  // Mantenemos el fondo azul claro
+          backdropFilter="blur(10px)"
+          borderTop="1px solid rgba(0,0,0,0.1)"  // Borde negro
+        >
+          <Box maxW="100%" mx="auto" px={{ base: 4, md: 6, lg: 8 }}>
+            <Stack spacing={0} py={4}>
+              {links.map((link, index) => (
+                <Box key={link.to}>
+                  <Link
+                    as={RouterLink}
+                    to={link.to}
+                    display="block"
+                    px={4}
+                    py={3}
+                    fontWeight="medium"
+                    bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
+                    color="black"  // Cambiado a negro
+                    _hover={{ 
+                      textDecoration: 'none',
+                      bg: 'rgba(0,0,0,0.1)',
+                      color: 'black',
+                      pl: 6
+                    }}
+                    onClick={onClose}
+                    transition="all 0.2s ease"
+                    position="relative"
+                  >
+                    <HStack justify="space-between">
+                      <Text color="black">{link.label}</Text>  {/* Texto en negro */}
+                      {isActiveLink(link.to) && (
+                        <Box
+                          w="4px"
+                          h="4px"
+                          bg="black"  // Cambiado a negro
+                          borderRadius="full"
+                        />
+                      )}
+                    </HStack>
+                  </Link>
+                  {index < links.length - 1 && (
+                    <Divider 
+                      borderColor="rgba(0,0,0,0.1)"  // Divisor negro
+                      mx={4}
+                    />
+                  )}
+                </Box>
+              ))}
+            </Stack>
+          </Box>
+        </Box>
+      )}
+    </Box>
+  );
+}
+
+export default Header;
