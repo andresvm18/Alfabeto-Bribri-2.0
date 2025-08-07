@@ -6,14 +6,14 @@ Este archivo documenta las tareas pendientes para el proyecto.
 
 ## Tareas por Hacer
 
-- [ ] **Reemplazar comentarios**  
+- [X] **Reemplazar comentarios**  
   Cambiar todos los `//` por `[ ]` en la pronunciación de la base de datos para mayor correctitud.
 
-- [ ] **Quitar audio en equivalencias**  
+- [X] **Quitar audio en equivalencias**  
   Eliminar los elementos de audio que aparecen en la sección de equivalencias.
 
-- [ ] **Esperar imágenes de Laura**  
-  Pausar el avance con las imágenes hasta recibir los recursos de Laura.
+- [X] **Esperar imágenes de Laura**  
+  Falta la imagen de "seˈ wö̀kir"
 
 - [ ] **Agregar audios a la página principal**  
   Incorporar funcionalidad de reproducción de audio en la página principal del juego.

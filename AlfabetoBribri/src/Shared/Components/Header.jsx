@@ -11,6 +11,7 @@ import {
   Container,
   Text,
   Divider,
+  Image,
 } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
@@ -31,7 +32,7 @@ function Header() {
   return (
     <Box 
       bg="#00C0F3" 
-      color="black"  // Cambiado a negro para el texto general
+      color="black"
       boxShadow="0 4px 12px rgba(0, 93, 164, 0.15)"
       position="sticky"
       top="0"
@@ -41,25 +42,33 @@ function Header() {
     >
       <Box maxW="100%" mx="auto" px={{ base: 4, md: 6, lg: 8 }}>
         <Flex h={20} alignItems="center" justifyContent="space-between">
-          {/* Logo/Título */}
-          <HStack spacing={8} align="center" flex="1">
+          {/* Logo y Título */}
+          <HStack spacing={4} align="center" flex="1">
             <Link
               as={RouterLink}
               to="/"
               _hover={{ textDecoration: 'none', transform: 'scale(1.02)' }}
               transition="all 0.2s ease"
-              color="black"  // Asegura que el link herede el color negro
+              color="black"
             >
-              <VStack spacing={0} align="start">
-                <Heading 
-                  size="lg" 
-                  fontWeight="bold"
-                  letterSpacing="tight"
-                  color="black"  // Cambiado a negro
-                >
-                  Alfabeto Bribrí
-                </Heading>
-              </VStack>
+              <HStack spacing={3}>
+                <Image 
+                  src="/src/Assets/FirmaUCR.png" 
+                  alt="Logo UCR"
+                  height="40px"
+                  objectFit="contain"
+                />
+                <VStack spacing={0} align="start">
+                  <Heading 
+                    size="lg" 
+                    fontWeight="bold"
+                    letterSpacing="tight"
+                    color="black"
+                  >
+                    Alfabeto Bribrí
+                  </Heading>
+                </VStack>
+              </HStack>
             </Link>
 
             {/* Navegación Desktop */}
@@ -81,8 +90,8 @@ function Header() {
                   fontWeight="medium"
                   fontSize="sm"
                   position="relative"
-                  bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}  // Cambiado a fondo negro con opacidad
-                  color="black"  // Cambiado a negro
+                  bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
+                  color="black"
                   _hover={{ 
                     textDecoration: 'none',
                     bg: 'rgba(0,0,0,0.1)',
@@ -103,7 +112,7 @@ function Header() {
                       transform="translateX(-50%)"
                       w="80%"
                       h="2px"
-                      bg="black"  // Cambiado a negro
+                      bg="black"
                       borderRadius="full"
                     />
                   )}
@@ -115,13 +124,13 @@ function Header() {
           {/* Botón hamburguesa móvil */}
           <IconButton
             size="lg"
-            icon={isOpen ? <CloseIcon boxSize={4} color="black" /> : <HamburgerIcon boxSize={5} color="black" />}  // Iconos en negro
+            icon={isOpen ? <CloseIcon boxSize={4} color="black" /> : <HamburgerIcon boxSize={5} color="black" />}
             aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
-            bg="rgba(0,0,0,0.1)"  // Fondo negro con opacidad
-            border="1px solid rgba(0,0,0,0.2)"  // Borde negro
-            color="black"  // Color negro
+            bg="rgba(0,0,0,0.1)"
+            border="1px solid rgba(0,0,0,0.2)"
+            color="black"
             _hover={{ 
               bg: 'rgba(0,0,0,0.2)',
               transform: 'scale(1.05)'
@@ -134,13 +143,13 @@ function Header() {
         </Flex>
       </Box>
 
-      {/* Menú móvil desplegable */}
+      {/* Menú móvil */}
       {isOpen && (
         <Box 
           display={{ md: 'none' }}
-          bg="#00C0F3"  // Mantenemos el fondo azul claro
+          bg="#00C0F3"
           backdropFilter="blur(10px)"
-          borderTop="1px solid rgba(0,0,0,0.1)"  // Borde negro
+          borderTop="1px solid rgba(0,0,0,0.1)"
         >
           <Box maxW="100%" mx="auto" px={{ base: 4, md: 6, lg: 8 }}>
             <Stack spacing={0} py={4}>
@@ -154,7 +163,7 @@ function Header() {
                     py={3}
                     fontWeight="medium"
                     bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
-                    color="black"  // Cambiado a negro
+                    color="black"
                     _hover={{ 
                       textDecoration: 'none',
                       bg: 'rgba(0,0,0,0.1)',
@@ -166,12 +175,12 @@ function Header() {
                     position="relative"
                   >
                     <HStack justify="space-between">
-                      <Text color="black">{link.label}</Text>  {/* Texto en negro */}
+                      <Text color="black">{link.label}</Text>
                       {isActiveLink(link.to) && (
                         <Box
                           w="4px"
                           h="4px"
-                          bg="black"  // Cambiado a negro
+                          bg="black"
                           borderRadius="full"
                         />
                       )}
@@ -179,7 +188,7 @@ function Header() {
                   </Link>
                   {index < links.length - 1 && (
                     <Divider 
-                      borderColor="rgba(0,0,0,0.1)"  // Divisor negro
+                      borderColor="rgba(0,0,0,0.1)"
                       mx={4}
                     />
                   )}
