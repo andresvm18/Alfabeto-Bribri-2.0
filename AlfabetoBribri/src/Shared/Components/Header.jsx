@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
+import LogoUCR from "../../Assets/FirmaUCR.png"
 
 function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,8 +31,8 @@ function Header() {
   const isActiveLink = (to) => location.pathname === to;
 
   return (
-    <Box 
-      bg="#00C0F3" 
+    <Box
+      bg="#00C0F3"
       color="black"
       boxShadow="0 4px 12px rgba(0, 93, 164, 0.15)"
       position="sticky"
@@ -52,15 +53,15 @@ function Header() {
               color="black"
             >
               <HStack spacing={3}>
-                <Image 
-                  src="/src/Assets/FirmaUCR.png" 
+                <Image
+                  src={LogoUCR}
                   alt="Logo UCR"
                   height="40px"
                   objectFit="contain"
                 />
                 <VStack spacing={0} align="start">
-                  <Heading 
-                    size="lg" 
+                  <Heading
+                    size="lg"
                     fontWeight="bold"
                     letterSpacing="tight"
                     color="black"
@@ -92,7 +93,7 @@ function Header() {
                   position="relative"
                   bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
                   color="black"
-                  _hover={{ 
+                  _hover={{
                     textDecoration: 'none',
                     bg: 'rgba(0,0,0,0.1)',
                     color: 'black',
@@ -131,7 +132,7 @@ function Header() {
             bg="rgba(0,0,0,0.1)"
             border="1px solid rgba(0,0,0,0.2)"
             color="black"
-            _hover={{ 
+            _hover={{
               bg: 'rgba(0,0,0,0.2)',
               transform: 'scale(1.05)'
             }}
@@ -145,7 +146,7 @@ function Header() {
 
       {/* Menú móvil */}
       {isOpen && (
-        <Box 
+        <Box
           display={{ md: 'none' }}
           bg="#00C0F3"
           backdropFilter="blur(10px)"
@@ -164,7 +165,7 @@ function Header() {
                     fontWeight="medium"
                     bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
                     color="black"
-                    _hover={{ 
+                    _hover={{
                       textDecoration: 'none',
                       bg: 'rgba(0,0,0,0.1)',
                       color: 'black',
@@ -187,7 +188,7 @@ function Header() {
                     </HStack>
                   </Link>
                   {index < links.length - 1 && (
-                    <Divider 
+                    <Divider
                       borderColor="rgba(0,0,0,0.1)"
                       mx={4}
                     />
