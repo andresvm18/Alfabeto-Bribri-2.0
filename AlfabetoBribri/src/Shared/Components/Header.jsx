@@ -66,7 +66,7 @@ function Header() {
                     letterSpacing="tight"
                     color="black"
                   >
-                    Alfabeto Bribrí
+                    Alfabeto Bribri
                   </Heading>
                 </VStack>
               </HStack>

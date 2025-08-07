@@ -15,7 +15,7 @@ function History() {
     <Box minH="100vh" w="100%" bg="gray.50" py={10} userSelect="none">
       <Container maxW="6xl">
         <Heading size="2xl" textAlign="center" color="black" mb={6}>
-          Lengua Bribrí y su Historia
+          Lengua Bribri y su Historia
         </Heading>
         <Text textAlign="center" color="gray.700" mb={10} maxW="2xl" mx="auto" fontSize="lg">
           La lengua Bribri es una de las lenguas indígenas más importantes de Costa Rica,{" "}
