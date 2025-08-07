@@ -47,6 +47,22 @@ function QuestionDisplay({ type, source, instructions }) {
     }
   }, [type, source]);
 
+  // 🚀 Aquí reiniciamos estado cuando cambia source o type
+  useEffect(() => {
+    if (type === "image") {
+      setImageLoaded(false);
+      setImageError(false);
+    } else if (type === "audio") {
+      setAudioLoaded(false);
+      setAudioError(false);
+      setIsPlaying(false);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    }
+  }, [type, source]);
+
   const handlePlayAudio = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -57,18 +73,12 @@ function QuestionDisplay({ type, source, instructions }) {
     }
   };
 
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
-
-  const handleImageError = () => {
-    setImageError(true);
-  };
+  const handleImageLoad = () => setImageLoaded(true);
+  const handleImageError = () => setImageError(true);
 
   return (
-    <Box w="full" userSelect={"none"} position="relative">
+    <Box w="full" userSelect="none" position="relative">
       <VStack spacing={6}>
-        {/* Contenedor principal de contenido */}
         <Box
           w="full"
           display="flex"
@@ -94,7 +104,6 @@ function QuestionDisplay({ type, source, instructions }) {
             background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
             borderRadius: "2xl"
           }}
-          userSelect={"none"}
         >
           {type === "image" ? (
             <Box position="relative" textAlign="center">
@@ -113,7 +122,7 @@ function QuestionDisplay({ type, source, instructions }) {
                   </Text>
                 </Box>
               )}
-              
+
               {imageError && (
                 <Alert status="error" borderRadius="xl" maxW="400px">
                   <AlertIcon />
@@ -122,7 +131,7 @@ function QuestionDisplay({ type, source, instructions }) {
                   </AlertDescription>
                 </Alert>
               )}
-              
+
               {!imageError && (
                 <Image
                   src={source}
@@ -148,8 +157,7 @@ function QuestionDisplay({ type, source, instructions }) {
           ) : (
             <Box textAlign="center">
               <audio ref={audioRef} src={source} preload="auto" />
-              
-              {/* Visualización de audio */}
+
               <Box 
                 mb={8}
                 p={8}
@@ -215,9 +223,7 @@ function QuestionDisplay({ type, source, instructions }) {
                     transform: "translateY(-2px)",
                     boxShadow: "xl"
                   }}
-                  _active={{ 
-                    transform: "translateY(0)" 
-                  }}
+                  _active={{ transform: "translateY(0)" }}
                   transition="all 0.2s ease"
                   disabled={!audioLoaded}
                   boxShadow="lg"
@@ -226,15 +232,13 @@ function QuestionDisplay({ type, source, instructions }) {
                     ? "Cargando..." 
                     : isPlaying 
                       ? "Pausar audio" 
-                      : "Reproducir audio"
-                  }
+                      : "Reproducir audio"}
                 </Button>
               )}
             </Box>
           )}
         </Box>
 
-        {/* Instrucciones */}
         {instructions && (
           <Box
             bg="white"
@@ -256,8 +260,6 @@ function QuestionDisplay({ type, source, instructions }) {
             >
               {instructions}
             </Text>
-            
-            {/* Decoración */}
             <Box
               position="absolute"
               top={0}
@@ -272,13 +274,13 @@ function QuestionDisplay({ type, source, instructions }) {
         )}
       </VStack>
 
-      {/* Estilos CSS para animaciones */}
+      {/* Animaciones CSS */}
       <style jsx>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.7; }
         }
-        
+
         @keyframes bounce {
           0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
           40% { transform: translateY(-10px); }
