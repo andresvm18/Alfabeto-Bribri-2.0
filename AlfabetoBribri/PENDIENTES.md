@@ -13,7 +13,7 @@ Este archivo documenta las tareas pendientes para el proyecto.
   Eliminar los elementos de audio que aparecen en la sección de equivalencias.
 
 - [X] **Esperar imágenes de Laura**  
-  Falta la imagen de "seˈ wö̀kir"
+  Faltan las imágenes de las pantallas principales
 
 - [ ] **Agregar audios a la página principal**  
   Incorporar funcionalidad de reproducción de audio en la página principal del juego.
@@ -36,6 +36,9 @@ Este archivo documenta las tareas pendientes para el proyecto.
 
 - [ ] **Realizar documentación interna**
   Realizar comentarios dentro del código para facilitar la interpretación y mantenibilidad del código para futuros desarrolladores
+
+- [ ] **Poner indicadores de carga en las pantallas de los juegos**
+  Agregar un indicador de carga para saber que la imagen se está poniendo ya que sin esto la imagen tarda en cambiar y parece que no va a cambiar y tarda un poco
 ---
 
 ## Notas
