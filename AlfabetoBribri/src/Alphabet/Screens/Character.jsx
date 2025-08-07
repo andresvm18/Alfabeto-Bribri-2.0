@@ -23,8 +23,8 @@ function Character() {
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imageLoaded, setImageLoaded] = useState({});
 
-  // Normaliza caracteres para resaltar letras sin importar tildes
   const normalizeChar = (char) =>
     char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
@@ -88,6 +88,10 @@ function Character() {
     fetchExamples();
   }, [decodedLetter]);
 
+  const handleImageLoad = (id) => {
+    setImageLoaded((prev) => ({ ...prev, [id]: true }));
+  };
+
   if (loading) {
     return (
       <Box
@@ -108,7 +112,7 @@ function Character() {
           size="xl"
           mb={4}
         />
-        <Heading as="h2" size="md" color="black"> {/* Cambiado a negro */}
+        <Heading as="h2" size="md" color="black">
           Cargando...
         </Heading>
       </Box>
@@ -165,12 +169,11 @@ function Character() {
               boxShadow="lg"
               overflow="hidden"
               borderWidth="1px"
-              borderColor="#00C0F3" // borde actualizado
+              borderColor="#00C0F3"
               height="100%"
               display="flex"
               flexDirection="column"
             >
-              {/* Imagen */}
               <Box
                 bg="white"
                 flex="1"
@@ -183,22 +186,23 @@ function Character() {
                 <Image
                   src={word.image}
                   alt={`Imagen de ${word.word}`}
-                  width="100%"
-                  height="100%"
+                  width="80%"
+                  height="80%"
                   objectFit="contain"
                   borderRadius="md"
                   bg="white"
+                  opacity={imageLoaded[word.id] ? 1 : 0}
+                  transition="opacity 0.5s ease-in-out"
+                  onLoad={() => handleImageLoad(word.id)}
                 />
               </Box>
 
-              {/* Contenido */}
               <Box p={4}>
                 <Flex align="center" justify="center">
                   <Text color="black" lineHeight="1">
                     {renderHighlightedWord(word.word)}
                   </Text>
                 </Flex>
-
 
                 <Flex align="center" justify="center" mb={3} minH="40px">
                   {word.interpretation ? (
@@ -208,7 +212,6 @@ function Character() {
                   )}
                 </Flex>
 
-                {/* Botón de audio */}
                 <Button
                   bg="#00C0F3"
                   _hover={{ bg: "#00A8D9", transform: "scale(1.05)" }}

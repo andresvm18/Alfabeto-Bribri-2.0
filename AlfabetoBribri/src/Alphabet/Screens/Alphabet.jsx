@@ -102,7 +102,7 @@ function Alphabet() {
       userSelect={"none"}
     >
       <Heading as="h1" size="xl" mb={8} textAlign="center" color="black">
-        Alfabeto Bribrí
+        Alfabeto Bribri
       </Heading>
 
       <Tabs variant="soft-rounded" colorScheme="blackAlpha" align="center">
