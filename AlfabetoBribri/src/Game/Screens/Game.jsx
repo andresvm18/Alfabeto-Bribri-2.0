@@ -16,6 +16,7 @@ import {
 import { FaTrophy, FaRedo, FaGamepad } from "react-icons/fa";
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
+import WordSearch from "../Components/WordSearch";
 import { supabase } from "../../supabaseClient";
 
 // Hook personalizado para obtener tamaño de ventana
@@ -108,6 +109,11 @@ function GamePage() {
 
   const { width, height } = useWindowSize();
 
+  // Estados para sopa de letras (modo4)
+  const [words, setWords] = useState([]);
+  const [loadingWords, setLoadingWords] = useState(true);
+
+  // Estados para preguntas (modo1, 2, 3)
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -116,59 +122,78 @@ function GamePage() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  // Cargar sopa de letras si modo4
   useEffect(() => {
-    async function loadQuestions() {
-      setLoading(true);
-      const q = await fetchQuestions(gameMode);
-      setQuestions(q);
-      setCurrentIndex(0);
-      setScore(0);
-      setShowFeedback(false);
-      setIsCorrect(null);
-      setShowConfetti(false);
-      setLoading(false);
+    if (gameMode === "modo4") {
+      async function loadWords() {
+        setLoadingWords(true);
+        let { data, error } = await supabase.from("Ejemplos").select("word");
+        if (error) {
+          console.error("Error fetching words for wordsearch:", error);
+          setWords([]);
+        } else {
+          const w = data
+            .map((item) => item.word.toUpperCase())
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 10);
+          setWords(w);
+        }
+        setLoadingWords(false);
+      }
+      loadWords();
     }
-    loadQuestions();
   }, [gameMode]);
 
-  const handleAnswer = (isCorrectAnswer) => {
-    setIsCorrect(isCorrectAnswer);
-    setShowFeedback(true);
-
-    if (isCorrectAnswer) {
-      setScore((prev) => prev + 1);
-      setShowConfetti(true);
-
-      setTimeout(() => {
+  // Cargar preguntas para otros modos
+  useEffect(() => {
+    if (gameMode !== "modo4") {
+      async function loadQuestions() {
+        setLoading(true);
+        const q = await fetchQuestions(gameMode);
+        setQuestions(q);
+        setCurrentIndex(0);
+        setScore(0);
+        setShowFeedback(false);
+        setIsCorrect(null);
         setShowConfetti(false);
-      }, 3000);
+        setLoading(false);
+      }
+      loadQuestions();
     }
-  };
+  }, [gameMode]);
 
-  const handleNext = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-      setShowFeedback(false);
-      setIsCorrect(null);
-      setShowConfetti(false);
-    } else {
-      setCurrentIndex(questions.length);
+  // Modo 4: mostrar sopa de letras
+  if (gameMode === "modo4") {
+    if (loadingWords) {
+      return (
+        <Container minH="100vh" centerContent justifyContent="center">
+          <VStack spacing={6}>
+            <Box
+              p={8}
+              borderRadius="2xl"
+              bg="white"
+              boxShadow="xl"
+              textAlign="center"
+            >
+              <Heading size="lg" color="gray.600">
+                Cargando sopa de letras...
+              </Heading>
+              <Progress
+                size="lg"
+                isIndeterminate
+                colorScheme="blue"
+                mt={6}
+                borderRadius="full"
+              />
+            </Box>
+          </VStack>
+        </Container>
+      );
     }
-  };
+    return <WordSearch words={words} gridSize={12} />;
+  }
 
-  const getScoreColor = (score, total) => {
-    const percentage = (score / total) * 100;
-    if (percentage >= 80) return "green.500";
-    if (percentage >= 60) return "yellow.500";
-    return "red.500";
-  };
-
-  const getScoreMessage = (score, total) => {
-    const percentage = (score / total) * 100;
-    if (percentage >= 80) return "¡Excelente trabajo! 🎉";
-    if (percentage >= 60) return "¡Buen trabajo! 👍";
-    return "Sigue practicando 💪";
-  };
+  // Modos 1,2,3: juego de preguntas
 
   if (loading) {
     return (
@@ -324,6 +349,45 @@ function GamePage() {
 
   const currentQuestion = questions[currentIndex];
 
+  const handleAnswer = (isCorrectAnswer) => {
+    setIsCorrect(isCorrectAnswer);
+    setShowFeedback(true);
+
+    if (isCorrectAnswer) {
+      setScore((prev) => prev + 1);
+      setShowConfetti(true);
+
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 3000);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+      setShowFeedback(false);
+      setIsCorrect(null);
+      setShowConfetti(false);
+    } else {
+      setCurrentIndex(questions.length);
+    }
+  };
+
+  const getScoreColor = (score, total) => {
+    const percentage = (score / total) * 100;
+    if (percentage >= 80) return "green.500";
+    if (percentage >= 60) return "yellow.500";
+    return "red.500";
+  };
+
+  const getScoreMessage = (score, total) => {
+    const percentage = (score / total) * 100;
+    if (percentage >= 80) return "¡Excelente trabajo! 🎉";
+    if (percentage >= 60) return "¡Buen trabajo! 👍";
+    return "Sigue practicando 💪";
+  };
+
   return (
     <Box
       minH="100vh"
@@ -333,7 +397,6 @@ function GamePage() {
       position="relative"
       overflow="hidden"
     >
-      {/* Confetti solo visible al acertar */}
       {showConfetti && (
         <Confetti
           width={width}
@@ -348,7 +411,6 @@ function GamePage() {
 
       <Container maxW="4xl">
         <VStack spacing={8}>
-          {/* Header con progreso */}
           <Box
             w="full"
             bg="white"
@@ -359,11 +421,7 @@ function GamePage() {
             borderColor="gray.100"
           >
             <VStack spacing={2} userSelect="none">
-              <Flex
-                w="full"
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Flex w="full" justifyContent="space-between" alignItems="center">
                 <Heading size="md" color="gray.700">
                   Pregunta {currentIndex + 1} de {questions.length}
                 </Heading>
@@ -395,7 +453,6 @@ function GamePage() {
             </VStack>
           </Box>
 
-          {/* Contenido principal */}
           <Box
             w="full"
             bg="white"

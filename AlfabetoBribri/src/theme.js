@@ -5,5 +5,11 @@ const config = {
   useSystemColorMode: false,
 }
 
-const theme = extendTheme({ config })
+const fonts = {
+  heading: `'Noto Sans', sans-serif`,
+  body: `'Noto Sans', sans-serif`,
+}
+
+const theme = extendTheme({ config, fonts })
+
 export default theme

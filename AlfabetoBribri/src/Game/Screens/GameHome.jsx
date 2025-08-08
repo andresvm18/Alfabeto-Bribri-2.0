@@ -26,6 +26,13 @@ function GameHomePage() {
         "Mezcla aleatoria de imágenes y audios para probar todo tu conocimiento.",
       imageUrl: "/modo-mixto.jpg",
     },
+    {
+      key: "modo4",
+      title: "Sopa de letras",
+      description:
+        "Encuentra las palabras bribrí ocultas en una sopa de letras.",
+      imageUrl: "/modo-sopa-letras.jpg",
+    },
   ];
 
   // Color único para todo
