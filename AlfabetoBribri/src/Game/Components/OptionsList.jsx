@@ -17,7 +17,6 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
     setIsAnimating(true);
     setSelected(option);
 
-    // Pequeña pausa para mostrar la animación
     setTimeout(() => {
       const isCorrect = option === correctAnswer;
       onAnswer(isCorrect);
@@ -25,30 +24,31 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
     }, 300);
   };
 
-  const getButtonStyles = (option) => {
-    const baseStyles = {
-      w: "full",
-      py: 6,
-      px: 8,
-      borderRadius: "xl",
-      fontWeight: "semibold",
-      fontSize: "lg",
-      transition: "all 0.2s ease",
-      border: "2px solid",
-      position: "relative",
-      overflow: "hidden",
-      _before: {
-        content: '""',
-        position: "absolute",
-        top: 0,
-        left: "-100%",
-        width: "100%",
-        height: "100%",
-        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
-        transition: "left 0.5s ease",
-      },
-    };
+  const baseStyles = {
+    w: "full",
+    minH: { base: "60px", md: "70px" }, // Altura mínima responsiva
+    py: { base: 4, md: 6 },
+    px: { base: 4, md: 8 },
+    borderRadius: "xl",
+    fontWeight: "semibold",
+    fontSize: { base: "sm", sm: "md", md: "lg" },
+    transition: "all 0.2s ease",
+    border: "2px solid",
+    position: "relative",
+    overflow: "hidden",
+    _before: {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: "-100%",
+      width: "100%",
+      height: "100%",
+      background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+      transition: "left 0.5s ease",
+    },
+  };
 
+  const getButtonStyles = (option) => {
     if (selected === null) {
       return {
         ...baseStyles,
@@ -116,46 +116,18 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
     <Box w="full">
       <style jsx>{`
         @keyframes pulse {
-          0% {
-            transform: scale(1);
-          }
-          50% {
-            transform: scale(1.05);
-          }
-          100% {
-            transform: scale(1);
-          }
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
         }
-
         @keyframes shake {
-          0%,
-          100% {
-            transform: translateX(0);
-          }
-          10%,
-          30%,
-          50%,
-          70%,
-          90% {
-            transform: translateX(-3px);
-          }
-          20%,
-          40%,
-          60%,
-          80% {
-            transform: translateX(3px);
-          }
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+          20%, 40%, 60%, 80% { transform: translateX(3px); }
         }
-
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
 
@@ -183,7 +155,8 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
         </Box>
       )}
 
-      <SimpleGrid columns={2} spacing={4} w="full">
+      {/* Distribución: 1 columna en móvil, 2 columnas en escritorio */}
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} w="full">
         {options.map((option, idx) => {
           const IconComponent = getIcon(option);
           const buttonStyles = getButtonStyles(option);
@@ -251,15 +224,20 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
                 ) : null
               }
             >
-              <Text flex={1} textAlign="left" pl={2}>
+              <Text
+                flex={1}
+                textAlign="left"
+                pl={2}
+                whiteSpace="normal"
+                wordBreak="break-word"
+                fontSize={{ base: "sm", sm: "md", md: "lg" }}
+              >
                 {option}
               </Text>
             </Button>
           );
         })}
       </SimpleGrid>
-
-
     </Box>
   );
 }
