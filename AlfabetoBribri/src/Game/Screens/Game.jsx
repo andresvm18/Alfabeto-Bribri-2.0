@@ -13,13 +13,12 @@ import {
   Flex,
   Icon,
 } from "@chakra-ui/react";
-import { FaTrophy, FaRedo, FaGamepad } from "react-icons/fa";
+import { FaTrophy, FaFont, FaGamepad } from "react-icons/fa";
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
 import WordSearch from "../Components/WordSearch";
 import { supabase } from "../../supabaseClient";
 
-// Hook personalizado para obtener tamaño de ventana
 function useWindowSize() {
   const [size, setSize] = useState({
     width: window.innerWidth,
@@ -33,14 +32,15 @@ function useWindowSize() {
         height: window.innerHeight,
       });
     }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize); // Agrega el listener
+    return () => window.removeEventListener("resize", handleResize); // Limpia el listener
   }, []);
 
   return size;
 }
 
 async function fetchQuestions(gameMode) {
+  // Obtiene las preguntas desde Supabase
   let { data: Ejemplos, error } = await supabase
     .from("Ejemplos")
     .select("word, audio, image");
@@ -54,20 +54,16 @@ async function fetchQuestions(gameMode) {
     return [];
   }
 
-  // Mezclar y seleccionar 10 aleatorias
   const shuffled = Ejemplos.sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, 10);
+  const selected = shuffled.slice(0, 1); // ToDo: cambiar a 10
 
-  // Crear preguntas con correctas e incorrectas
   const questions = selected.map((correctItem) => {
-    // Elegir 3 incorrectas
     const incorrectOptions = Ejemplos
       .filter((item) => item.word !== correctItem.word)
       .sort(() => Math.random() - 0.5)
       .slice(0, 3)
       .map((item) => item.word);
 
-    // Definir tipo y fuente
     let type = "image";
     let source = correctItem.image;
     if (gameMode === "modo2") {
@@ -98,12 +94,26 @@ async function fetchQuestions(gameMode) {
   return questions;
 }
 
-// Helper para mezclar opciones
 function shuffleArray(array) {
   return array.sort(() => Math.random() - 0.5);
 }
 
 function GamePage() {
+  const getScoreColor = (score, total) => {
+    const percentage = (score / total) * 100;
+    if (percentage === 0) return "red.500";
+    if (percentage >= 80) return "green.500";
+    if (percentage >= 60) return "yellow.500";
+    return "red.500";
+  };
+
+  const getScoreMessage = (score, total) => {
+    const percentage = (score / total) * 100;
+    if (percentage >= 80) return "¡Excelente trabajo! 🎉";
+    if (percentage >= 60) return "¡Buen trabajo! 👍";
+    return "Sigue practicando 💪";
+  };
+
   const { gameMode } = useParams();
   console.log("Modo de juego:", gameMode);
 
@@ -135,7 +145,7 @@ function GamePage() {
           const w = data
             .map((item) => item.word.toUpperCase())
             .sort(() => Math.random() - 0.5)
-            .slice(0, 10);
+            .slice(0, 5); // ToDo: cambiar a 5
           setWords(w);
         }
         setLoadingWords(false);
@@ -305,7 +315,7 @@ function GamePage() {
                 borderRadius="full"
                 fontSize="lg"
                 fontWeight="bold"
-                leftIcon={<Icon as={FaRedo} />}
+                leftIcon={<Icon as={FaFont} />} 
                 _hover={{
                   bg: "#0099CC",
                   transform: "translateY(-2px)",
@@ -313,9 +323,9 @@ function GamePage() {
                 }}
                 _active={{ transform: "translateY(0)" }}
                 transition="all 0.2s ease"
-                onClick={() => window.location.reload()}
+                onClick={() => window.location.href = "/alfabeto"}
               >
-                Jugar otra vez
+                Alfabeto
               </Button>
 
               <Button
@@ -372,20 +382,6 @@ function GamePage() {
     } else {
       setCurrentIndex(questions.length);
     }
-  };
-
-  const getScoreColor = (score, total) => {
-    const percentage = (score / total) * 100;
-    if (percentage >= 80) return "green.500";
-    if (percentage >= 60) return "yellow.500";
-    return "red.500";
-  };
-
-  const getScoreMessage = (score, total) => {
-    const percentage = (score / total) * 100;
-    if (percentage >= 80) return "¡Excelente trabajo! 🎉";
-    if (percentage >= 60) return "¡Buen trabajo! 👍";
-    return "Sigue practicando 💪";
   };
 
   return (

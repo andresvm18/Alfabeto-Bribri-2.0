@@ -28,7 +28,6 @@ function HomePage() {
       position="relative"
       overflow="hidden"
     >
-      {/* Background decorative elements */}
       <Box
         position="absolute"
         top="-50px"
@@ -50,7 +49,6 @@ function HomePage() {
         filter="blur(4px)"
       />
       
-      {/* Main content */}
       <Box 
         position="relative" 
         zIndex={1}
@@ -59,7 +57,6 @@ function HomePage() {
         px={6}
       >
         <VStack spacing={16}>
-          {/* Header Section */}
           <VStack spacing={6} mb={8}>
             <Heading 
               as="h1" 
@@ -73,7 +70,6 @@ function HomePage() {
             </Heading>
           </VStack>
 
-          {/* Cards Grid */}
           <SimpleGrid 
             columns={{ base: 1, lg: 2 }} 
             spacing={12} 
@@ -81,7 +77,6 @@ function HomePage() {
             mx="auto"
             w="full"
           >
-            {/* Alphabet Card */}
             <Box
               transform="translateY(0)"
               transition="all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
@@ -121,7 +116,6 @@ function HomePage() {
               </Box>
             </Box>
 
-            {/* Game Card */}
             <Box
               transform="translateY(0)"
               transition="all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
@@ -162,7 +156,6 @@ function HomePage() {
             </Box>
           </SimpleGrid>
 
-          {/* Floating Action Elements */}
           <Box
             position="absolute"
             top="20%"
@@ -188,7 +181,6 @@ function HomePage() {
         </VStack>
       </Box>
 
-      {/* CSS Animations */}
       <style jsx>{`
         @keyframes float {
           0%, 100% {

@@ -28,12 +28,10 @@ function Footer() {
 
   return (
     <Box as="footer" bg="#323232" color="white" userSelect="none">
-      {/* Contenido principal del footer */}
       <Box py={12}>
         <Box maxW="1200px" mx="auto" px={6}>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
 
-            {/* Sección de Logo y Descripción */}
             <VStack align="flex-start" spacing={6}>
               <Box>
                 <Image
@@ -64,7 +62,6 @@ function Footer() {
               </VStack>
             </VStack>
 
-            {/* Sección de Equipo */}
             <VStack align="flex-start" spacing={6}>
               <HStack spacing={2}>
                 <Icon as={FiUsers} color="teal.300" />
@@ -72,7 +69,6 @@ function Footer() {
               </HStack>
 
               <VStack align="flex-start" spacing={4} w="100%">
-                {/* Desarrolladores */}
                 <Box>
                   <HStack spacing={2} mb={3}>
                     <Icon as={FiCode} color="orange.300" boxSize={4} />
@@ -92,7 +88,6 @@ function Footer() {
                   </VStack>
                 </Box>
 
-                {/* Colaboradores */}
                 <Box>
                   <HStack spacing={2} mb={3}>
                     <Icon as={FiLayout} color="pink.300" boxSize={4} />
@@ -107,7 +102,6 @@ function Footer() {
               </VStack>
             </VStack>
 
-            {/* Sección de Contacto */}
             <VStack align="flex-start" spacing={6}>
               <HStack spacing={2}>
                 <Icon as={FiMail} color="teal.300" />
@@ -115,7 +109,6 @@ function Footer() {
               </HStack>
 
               <VStack align="flex-start" spacing={4} w="100%">
-                {/* Email */}
                 <HStack spacing={3}>
                   <Icon as={FiMail} color="gray.400" boxSize={4} />
                   <Text fontSize="sm" color="gray.300">
@@ -130,7 +123,6 @@ function Footer() {
                   </Text>
                 </HStack>
 
-                {/* Teléfono */}
                 <HStack spacing={3}>
                   <Icon as={FiPhone} color="gray.400" boxSize={4} />
                   <Text fontSize="sm" color="gray.300">
@@ -138,7 +130,6 @@ function Footer() {
                   </Text>
                 </HStack>
 
-                {/* Dirección */}
                 <HStack spacing={3} align="flex-start">
                   <Icon as={FiMapPin} color="gray.400" boxSize={4} mt={0.5} />
                   <VStack align="flex-start" spacing={1}>
@@ -156,10 +147,8 @@ function Footer() {
         </Box>
       </Box>
 
-      {/* Divider */}
       <Divider borderColor="gray.600" />
 
-      {/* Copyright */}
       <Box py={6}>
         <Box maxW="1200px" mx="auto" px={6}>
           <Flex

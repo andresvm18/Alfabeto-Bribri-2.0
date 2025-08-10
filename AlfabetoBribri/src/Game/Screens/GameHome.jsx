@@ -8,34 +8,23 @@ function GameHomePage() {
     {
       key: "modo1",
       title: "¿Cómo se llama? (Imagen)",
-      description:
-        "Identifica la palabra bribrí que corresponde a la imagen mostrada.",
+      description: "Identifica la palabra bribrí que corresponde a la imagen mostrada.",
       imageUrl: "/modo-imagen.jpg",
     },
     {
       key: "modo2",
       title: "¿Cómo se escribe? (Audio)",
-      description:
-        "Escucha el audio y selecciona la palabra escrita correctamente.",
+      description: "Escucha el audio y selecciona la palabra escrita correctamente.",
       imageUrl: "/modo-audio.jpg",
-    },
-    {
-      key: "modo3",
-      title: "Examen mixto",
-      description:
-        "Mezcla aleatoria de imágenes y audios para probar todo tu conocimiento.",
-      imageUrl: "/modo-mixto.jpg",
     },
     {
       key: "modo4",
       title: "Sopa de letras",
-      description:
-        "Encuentra las palabras bribrí ocultas en una sopa de letras.",
+      description: "Encuentra las palabras bribrí ocultas en una sopa de letras.",
       imageUrl: "/modo-sopa-letras.jpg",
     },
   ];
 
-  // Color único para todo
   const mainColor = "#00C0F3";
   const mainHoverColor = "#0099CC";
   const mainShadow = "0 8px 25px rgba(0, 192, 243, 0.5)";

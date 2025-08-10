@@ -10,8 +10,6 @@ import History from "./Shared/Screens/History";
 import Footer from "./Shared/Components/Footer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-
 function App() {
   return (
     <>

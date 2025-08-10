@@ -12,7 +12,7 @@ function Alphabet() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Función para ordenar por número en el ID
+  // Función para ordenar por ID numérico
   const sortById = (arr) => {
     return arr.sort((a, b) => {
       const numA = parseInt(a.id.split('-')[1], 10);
@@ -30,14 +30,12 @@ function Alphabet() {
           .select('*')
           .eq('type', 'vowel');
 
-
         // Obtener consonantes
         const { data: consonants } = await supabase
           .from('Alfabeto')
           .select('*')
           .eq('type', 'consonant');
 
-        // Obtener tonos
         const { data: tones } = await supabase
           .from('Alfabeto')
           .select('*')

@@ -47,7 +47,6 @@ function QuestionDisplay({ type, source, instructions }) {
     }
   }, [type, source]);
 
-  // 🚀 Aquí reiniciamos estado cuando cambia source o type
   useEffect(() => {
     if (type === "image") {
       setImageLoaded(false);
@@ -274,7 +273,6 @@ function QuestionDisplay({ type, source, instructions }) {
         )}
       </VStack>
 
-      {/* Animaciones CSS */}
       <style jsx>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }
