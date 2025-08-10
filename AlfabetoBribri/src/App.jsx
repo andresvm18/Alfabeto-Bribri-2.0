@@ -8,8 +8,8 @@ import Game from "./Game/Screens/GameHome";
 import GameMode from "./Game/Screens/Game";
 import History from "./Shared/Screens/History";
 import Footer from "./Shared/Components/Footer";
-
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <>
@@ -19,13 +19,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/alfabeto" element={<Alphabet />} />
           <Route path="/caracter/:letra" element={<Character />} />
-           <Route path="/aprende" element={<Game />} />
+          <Route path="/aprende" element={<Game />} />
           <Route path="/juego/:gameMode" element={<GameMode />} />
           <Route path="/equivalencias-afi" element={<AFIEquivalencies />} />
           <Route path="/historia" element={<History />} />
         </Routes>
         <Footer />
       </BrowserRouter>
+      <ToastContainer />
     </>
   )
 }

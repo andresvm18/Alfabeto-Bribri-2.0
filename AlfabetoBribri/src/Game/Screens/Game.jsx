@@ -13,12 +13,12 @@ import {
   Flex,
   Icon,
 } from "@chakra-ui/react";
-import { FaTrophy, FaRedo, FaGamepad } from "react-icons/fa";
+import { FaTrophy, FaFont, FaGamepad } from "react-icons/fa";
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
+import WordSearch from "../Components/WordSearch";
 import { supabase } from "../../supabaseClient";
 
-// Hook personalizado para obtener tamaño de ventana
 function useWindowSize() {
   const [size, setSize] = useState({
     width: window.innerWidth,
@@ -32,14 +32,15 @@ function useWindowSize() {
         height: window.innerHeight,
       });
     }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize); // Agrega el listener
+    return () => window.removeEventListener("resize", handleResize); // Limpia el listener
   }, []);
 
   return size;
 }
 
 async function fetchQuestions(gameMode) {
+  // Obtiene las preguntas desde Supabase
   let { data: Ejemplos, error } = await supabase
     .from("Ejemplos")
     .select("word, audio, image");
@@ -53,20 +54,16 @@ async function fetchQuestions(gameMode) {
     return [];
   }
 
-  // Mezclar y seleccionar 10 aleatorias
   const shuffled = Ejemplos.sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, 10);
+  const selected = shuffled.slice(0, 1); // ToDo: cambiar a 10
 
-  // Crear preguntas con correctas e incorrectas
   const questions = selected.map((correctItem) => {
-    // Elegir 3 incorrectas
     const incorrectOptions = Ejemplos
       .filter((item) => item.word !== correctItem.word)
       .sort(() => Math.random() - 0.5)
       .slice(0, 3)
       .map((item) => item.word);
 
-    // Definir tipo y fuente
     let type = "image";
     let source = correctItem.image;
     if (gameMode === "modo2") {
@@ -97,67 +94,14 @@ async function fetchQuestions(gameMode) {
   return questions;
 }
 
-// Helper para mezclar opciones
 function shuffleArray(array) {
   return array.sort(() => Math.random() - 0.5);
 }
 
 function GamePage() {
-  const { gameMode } = useParams();
-  console.log("Modo de juego:", gameMode);
-
-  const { width, height } = useWindowSize();
-
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(null);
-  const [showConfetti, setShowConfetti] = useState(false);
-
-  useEffect(() => {
-    async function loadQuestions() {
-      setLoading(true);
-      const q = await fetchQuestions(gameMode);
-      setQuestions(q);
-      setCurrentIndex(0);
-      setScore(0);
-      setShowFeedback(false);
-      setIsCorrect(null);
-      setShowConfetti(false);
-      setLoading(false);
-    }
-    loadQuestions();
-  }, [gameMode]);
-
-  const handleAnswer = (isCorrectAnswer) => {
-    setIsCorrect(isCorrectAnswer);
-    setShowFeedback(true);
-
-    if (isCorrectAnswer) {
-      setScore((prev) => prev + 1);
-      setShowConfetti(true);
-
-      setTimeout(() => {
-        setShowConfetti(false);
-      }, 3000);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-      setShowFeedback(false);
-      setIsCorrect(null);
-      setShowConfetti(false);
-    } else {
-      setCurrentIndex(questions.length);
-    }
-  };
-
   const getScoreColor = (score, total) => {
     const percentage = (score / total) * 100;
+    if (percentage === 0) return "red.500";
     if (percentage >= 80) return "green.500";
     if (percentage >= 60) return "yellow.500";
     return "red.500";
@@ -169,6 +113,97 @@ function GamePage() {
     if (percentage >= 60) return "¡Buen trabajo! 👍";
     return "Sigue practicando 💪";
   };
+
+  const { gameMode } = useParams();
+  console.log("Modo de juego:", gameMode);
+
+  const { width, height } = useWindowSize();
+
+  // Estados para sopa de letras (modo4)
+  const [words, setWords] = useState([]);
+  const [loadingWords, setLoadingWords] = useState(true);
+
+  // Estados para preguntas (modo1, 2, 3)
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  // Cargar sopa de letras si modo4
+  useEffect(() => {
+    if (gameMode === "modo4") {
+      async function loadWords() {
+        setLoadingWords(true);
+        let { data, error } = await supabase.from("Ejemplos").select("word");
+        if (error) {
+          console.error("Error fetching words for wordsearch:", error);
+          setWords([]);
+        } else {
+          const w = data
+            .map((item) => item.word.toUpperCase())
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 5); // ToDo: cambiar a 5
+          setWords(w);
+        }
+        setLoadingWords(false);
+      }
+      loadWords();
+    }
+  }, [gameMode]);
+
+  // Cargar preguntas para otros modos
+  useEffect(() => {
+    if (gameMode !== "modo4") {
+      async function loadQuestions() {
+        setLoading(true);
+        const q = await fetchQuestions(gameMode);
+        setQuestions(q);
+        setCurrentIndex(0);
+        setScore(0);
+        setShowFeedback(false);
+        setIsCorrect(null);
+        setShowConfetti(false);
+        setLoading(false);
+      }
+      loadQuestions();
+    }
+  }, [gameMode]);
+
+  // Modo 4: mostrar sopa de letras
+  if (gameMode === "modo4") {
+    if (loadingWords) {
+      return (
+        <Container minH="100vh" centerContent justifyContent="center">
+          <VStack spacing={6}>
+            <Box
+              p={8}
+              borderRadius="2xl"
+              bg="white"
+              boxShadow="xl"
+              textAlign="center"
+            >
+              <Heading size="lg" color="gray.600">
+                Cargando sopa de letras...
+              </Heading>
+              <Progress
+                size="lg"
+                isIndeterminate
+                colorScheme="blue"
+                mt={6}
+                borderRadius="full"
+              />
+            </Box>
+          </VStack>
+        </Container>
+      );
+    }
+    return <WordSearch words={words} gridSize={12} />;
+  }
+
+  // Modos 1,2,3: juego de preguntas
 
   if (loading) {
     return (
@@ -280,7 +315,7 @@ function GamePage() {
                 borderRadius="full"
                 fontSize="lg"
                 fontWeight="bold"
-                leftIcon={<Icon as={FaRedo} />}
+                leftIcon={<Icon as={FaFont} />} 
                 _hover={{
                   bg: "#0099CC",
                   transform: "translateY(-2px)",
@@ -288,9 +323,9 @@ function GamePage() {
                 }}
                 _active={{ transform: "translateY(0)" }}
                 transition="all 0.2s ease"
-                onClick={() => window.location.reload()}
+                onClick={() => window.location.href = "/alfabeto"}
               >
-                Jugar otra vez
+                Alfabeto
               </Button>
 
               <Button
@@ -324,6 +359,31 @@ function GamePage() {
 
   const currentQuestion = questions[currentIndex];
 
+  const handleAnswer = (isCorrectAnswer) => {
+    setIsCorrect(isCorrectAnswer);
+    setShowFeedback(true);
+
+    if (isCorrectAnswer) {
+      setScore((prev) => prev + 1);
+      setShowConfetti(true);
+
+      setTimeout(() => {
+        setShowConfetti(false);
+      }, 3000);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+      setShowFeedback(false);
+      setIsCorrect(null);
+      setShowConfetti(false);
+    } else {
+      setCurrentIndex(questions.length);
+    }
+  };
+
   return (
     <Box
       minH="100vh"
@@ -333,7 +393,6 @@ function GamePage() {
       position="relative"
       overflow="hidden"
     >
-      {/* Confetti solo visible al acertar */}
       {showConfetti && (
         <Confetti
           width={width}
@@ -348,7 +407,6 @@ function GamePage() {
 
       <Container maxW="4xl">
         <VStack spacing={8}>
-          {/* Header con progreso */}
           <Box
             w="full"
             bg="white"
@@ -359,11 +417,7 @@ function GamePage() {
             borderColor="gray.100"
           >
             <VStack spacing={2} userSelect="none">
-              <Flex
-                w="full"
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Flex w="full" justifyContent="space-between" alignItems="center">
                 <Heading size="md" color="gray.700">
                   Pregunta {currentIndex + 1} de {questions.length}
                 </Heading>
@@ -395,7 +449,6 @@ function GamePage() {
             </VStack>
           </Box>
 
-          {/* Contenido principal */}
           <Box
             w="full"
             bg="white"

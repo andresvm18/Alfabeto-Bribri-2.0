@@ -18,8 +18,8 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import LogoUCR from "../../Assets/FirmaUCR.png"
 
 function Header() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const location = useLocation();
+  const { isOpen, onOpen, onClose } = useDisclosure(); // Para el menú móvil
+  const location = useLocation(); // Hook para obtener la ruta actual
 
   const links = [
     { label: 'Alfabeto', to: '/alfabeto' },
@@ -43,7 +43,6 @@ function Header() {
     >
       <Box maxW="100%" mx="auto" px={{ base: 4, md: 6, lg: 8 }}>
         <Flex h={20} alignItems="center" justifyContent="space-between">
-          {/* Logo y Título */}
           <HStack spacing={4} align="center" flex="1">
             <Link
               as={RouterLink}
@@ -72,7 +71,6 @@ function Header() {
               </HStack>
             </Link>
 
-            {/* Navegación Desktop */}
             <HStack
               as="nav"
               spacing={0}
@@ -122,7 +120,6 @@ function Header() {
             </HStack>
           </HStack>
 
-          {/* Botón hamburguesa móvil */}
           <IconButton
             size="lg"
             icon={isOpen ? <CloseIcon boxSize={4} color="black" /> : <HamburgerIcon boxSize={5} color="black" />}
@@ -144,7 +141,6 @@ function Header() {
         </Flex>
       </Box>
 
-      {/* Menú móvil */}
       {isOpen && (
         <Box
           display={{ md: 'none' }}

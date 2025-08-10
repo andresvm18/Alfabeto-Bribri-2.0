@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "grapheme-splitter": "^1.0.4",
+    "react-toastify": "^11.0.5"
+  }
+}

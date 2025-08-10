@@ -155,7 +155,6 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
         </Box>
       )}
 
-      {/* Distribución: 1 columna en móvil, 2 columnas en escritorio */}
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} w="full">
         {options.map((option, idx) => {
           const IconComponent = getIcon(option);
