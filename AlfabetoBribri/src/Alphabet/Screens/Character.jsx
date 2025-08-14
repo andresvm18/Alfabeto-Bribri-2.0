@@ -29,6 +29,37 @@ function Character() {
     char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
   const renderHighlightedWord = (word) => {
+    const prefix = "seˈ";
+    const normalizedPrefix = normalizeChar(prefix);
+
+    if (normalizeChar(word).startsWith(normalizedPrefix)) {
+      return (
+        <>
+          <chakra.span
+            fontWeight="normal"
+            fontSize="xl"
+            color="gray.400"
+          >
+            {word.slice(0, 3)}
+          </chakra.span>
+          {word.slice(3).split("").map((char, i) => (
+            <chakra.span
+              key={i}
+              fontWeight={
+                normalizeChar(char) === normalizeChar(decodedLetter)
+                  ? "bold"
+                  : "normal"
+              }
+              fontSize="xl"
+              color="black"
+            >
+              {char}
+            </chakra.span>
+          ))}
+        </>
+      );
+    }
+
     return word.split("").map((char, i) => (
       <chakra.span
         key={i}

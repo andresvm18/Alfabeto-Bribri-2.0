@@ -18,9 +18,6 @@ Este archivo documenta las tareas pendientes para el proyecto.
 - [ ] **Esperar imágenes de Laura**  
   Faltan las imágenes de las pantallas principales.
 
-- [ ] **Poner en gris los "se'"**  
-  Cambiar el color del texto `"se'"` a gris donde aparezca.
-
 - [ ] **Manual de usuario**  
   Elaborar un documento con las instrucciones de uso del sistema.
 
@@ -30,6 +27,9 @@ Este archivo documenta las tareas pendientes para el proyecto.
 ---
 
 ## Tareas Completadas
+
+- [X] **Poner en gris los "se'"**  
+  Cambiar el color del texto `"se'"` a gris donde aparezca.
 
 - [X] **Quitar  la interpretación de las palabras en español**  
   Eliminar la traducción de la palabra
