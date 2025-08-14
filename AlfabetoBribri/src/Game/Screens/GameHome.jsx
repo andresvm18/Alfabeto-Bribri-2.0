@@ -18,6 +18,13 @@ function GameHomePage() {
       imageUrl: "/modo-audio.jpg",
     },
     {
+      key: "modo3",
+      title: "Examen mixto",
+      description:
+        "Mezcla aleatoria de imágenes y audios para probar todo tu conocimiento.",
+      imageUrl: "/modo-mixto.jpg",
+    },
+    {
       key: "modo4",
       title: "Sopa de letras",
       description: "Encuentra las palabras bribrí ocultas en una sopa de letras.",
@@ -45,9 +52,10 @@ function GameHomePage() {
 
         <Box
           display="grid"
-          gridTemplateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
+          gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)", xl: "repeat(4, 1fr)" }}
           gap={10}
         >
+
           {modes.map(({ key, title, description, imageUrl }) => (
             <Box
               key={key}

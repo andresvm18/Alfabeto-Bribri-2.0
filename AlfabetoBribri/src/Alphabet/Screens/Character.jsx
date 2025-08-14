@@ -223,8 +223,8 @@ function Character() {
                   width="100%"
                   fontSize="lg"
                 >
-                  Escuchar
                 </Button>
+
               </Box>
             </Box>
           ))}

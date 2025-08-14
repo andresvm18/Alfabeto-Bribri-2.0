@@ -43,7 +43,8 @@ function WordSearch({ words = [] }) {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const alphabet = "abcdefghijklmnopqrstuvwxyzáéíóúüñ";
+  const alphabet = "abcdefghijklmnopqrstuvwxyzáéíóúüñaàâa̠à̠á̠â̠eèêe̠è̠é̠ê̠iìîi̠ì̠í̠î̠oòôo̠ò̠ó̠ô̠uùûu̠ù̠ú̠û̠";
+
 
   useEffect(() => {
     const newGridSize = calculateGridSize();
