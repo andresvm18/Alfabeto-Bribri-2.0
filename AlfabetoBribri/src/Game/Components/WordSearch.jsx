@@ -20,13 +20,22 @@ import { FaFont, FaGamepad } from "react-icons/fa";
 
 function WordSearch({ words = [] }) {
   const navigate = useNavigate();
+  const splitter = new GraphemeSplitter();
 
-  // Normalizar palabras a NFC y convertir a minúsculas
+  // Normalizar palabras a NFC y minúsculas
   const normalizedWords = words
     .map((w) => w.split("/")[0].normalize("NFC").trim().toLowerCase());
 
+  const alphabet =
+    "abcdefghijklmnopqrstuvwxyzáéíóúüñaàâa̠à̠á̠â̠eèêe̠è̠é̠ê̠iìîi̠ì̠í̠î̠oòôo̠ò̠ó̠ô̠uùûu̠ù̠ú̠û̠";
 
-  const splitter = new GraphemeSplitter();
+  // Separar alphabet en graphemes
+  const alphabetGraphemes = splitter.splitGraphemes(alphabet);
+
+  // Filtrar para que no queden solo marcas diacríticas
+  const validAlphabetGraphemes = alphabetGraphemes.filter(g =>
+    [...g].some(char => !/\p{M}/u.test(char))
+  );
 
   const calculateGridSize = () => {
     if (normalizedWords.length === 0) return 10;
@@ -40,11 +49,7 @@ function WordSearch({ words = [] }) {
   const [grid, setGrid] = useState([]);
   const [selectedCells, setSelectedCells] = useState([]);
   const [foundWords, setFoundWords] = useState([]);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const alphabet = "abcdefghijklmnopqrstuvwxyzáéíóúüñaàâa̠à̠á̠â̠eèêe̠è̠é̠ê̠iìîi̠ì̠í̠î̠oòôo̠ò̠ó̠ô̠uùûu̠ù̠ú̠û̠";
-
 
   useEffect(() => {
     const newGridSize = calculateGridSize();
@@ -54,19 +59,17 @@ function WordSearch({ words = [] }) {
       .fill(null)
       .map(() => Array(newGridSize).fill(null));
 
+    // Colocar palabras en la grilla
     normalizedWords.forEach((word) => {
       const graphemes = splitter.splitGraphemes(word);
-
       let placed = false;
       let attempts = 0;
 
       while (!placed && attempts < 100) {
         attempts++;
         const direction = Math.random() < 0.5 ? "horizontal" : "vertical";
-
         const maxRow = direction === "horizontal" ? newGridSize : newGridSize - graphemes.length;
         const maxCol = direction === "horizontal" ? newGridSize - graphemes.length : newGridSize;
-
         const startRow = Math.floor(Math.random() * maxRow);
         const startCol = Math.floor(Math.random() * maxCol);
 
@@ -74,7 +77,6 @@ function WordSearch({ words = [] }) {
         for (let i = 0; i < graphemes.length; i++) {
           const r = direction === "horizontal" ? startRow : startRow + i;
           const c = direction === "horizontal" ? startCol + i : startCol;
-
           if (newGrid[r][c] && newGrid[r][c] !== graphemes[i]) {
             canPlace = false;
             break;
@@ -92,11 +94,13 @@ function WordSearch({ words = [] }) {
       }
     });
 
-    // Rellenar espacios vacíos con letras aleatorias del alfabeto
+    // Rellenar celdas vacías con letras aleatorias válidas
     for (let r = 0; r < newGridSize; r++) {
       for (let c = 0; c < newGridSize; c++) {
         if (!newGrid[r][c]) {
-          newGrid[r][c] = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+          const randomIndex = Math.floor(Math.random() * validAlphabetGraphemes.length);
+          const randomChar = validAlphabetGraphemes[randomIndex];
+          newGrid[r][c] = randomChar;
         }
       }
     }
@@ -113,9 +117,7 @@ function WordSearch({ words = [] }) {
   }, [foundWords, normalizedWords.length, onOpen]);
 
   const toggleCellSelection = (row, col) => {
-    if (foundWords.some((fw) => fw.cells.some(([r, c]) => r === row && c === col))) {
-      return;
-    }
+    if (foundWords.some((fw) => fw.cells.some(([r, c]) => r === row && c === col))) return;
 
     const index = selectedCells.findIndex(([r, c]) => r === row && c === col);
     if (index !== -1) {
@@ -157,25 +159,12 @@ function WordSearch({ words = [] }) {
     foundWords.some((fw) => fw.cells.some(([r, c]) => r === row && c === col));
 
   return (
-    <Box
-      maxW="700px"
-      mx="auto"
-      p={6}
-      userSelect="none"
-      textAlign="center"
-      fontFamily="body"
-    >
+    <Box maxW="700px" mx="auto" p={6} userSelect="none" textAlign="center" fontFamily="body">
       <Text fontSize="3xl" mb={6} fontWeight="extrabold" color="#00C0F3" letterSpacing="wide">
         Sopa de Letras
       </Text>
 
-      <Box
-        mb={6}
-        fontWeight="semibold"
-        fontSize={{ base: "md", md: "lg" }}
-        maxW="600px"
-        mx="auto"
-      >
+      <Box mb={6} fontWeight="semibold" fontSize={{ base: "md", md: "lg" }} maxW="600px" mx="auto">
         Palabras a buscar:{" "}
         {normalizedWords.map((word, idx) => (
           <Box
@@ -220,13 +209,7 @@ function WordSearch({ words = [] }) {
               fontSize={{ base: "md", md: "lg" }}
               fontWeight="bold"
               color={isCellFound(r, c) ? "green.600" : "#333"}
-              bg={
-                isCellSelected(r, c)
-                  ? "#00C0F3"
-                  : isCellFound(r, c)
-                    ? "green.100"
-                    : "white"
-              }
+              bg={isCellSelected(r, c) ? "#00C0F3" : isCellFound(r, c) ? "green.100" : "white"}
               cursor={isCellFound(r, c) ? "default" : "pointer"}
               userSelect="none"
               border="1px solid"
@@ -263,17 +246,9 @@ function WordSearch({ words = [] }) {
         </Button>
       </VStack>
 
-      {/* Modal de felicitaciones */}
-      {/* Modal de felicitaciones */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent
-          bg="white"
-          borderRadius="3xl"
-          boxShadow="2xl"
-          maxW="400px"
-          mx="auto"
-        >
+        <ModalContent bg="white" borderRadius="3xl" boxShadow="2xl" maxW="400px" mx="auto">
           <ModalHeader
             fontWeight="extrabold"
             color="#00C0F3"
@@ -284,13 +259,7 @@ function WordSearch({ words = [] }) {
             ¡Felicidades!
           </ModalHeader>
 
-          <ModalBody
-            fontWeight="semibold"
-            fontSize={{ base: "md", md: "lg" }}
-            textAlign="center"
-            color="gray.700"
-            pb={6}
-          >
+          <ModalBody fontWeight="semibold" fontSize={{ base: "md", md: "lg" }} textAlign="center" color="gray.700" pb={6}>
             Has encontrado todas las palabras
           </ModalBody>
 
@@ -342,9 +311,6 @@ function WordSearch({ words = [] }) {
         </ModalContent>
       </Modal>
 
-
-
-      {/* Animaciones CSS */}
       <style>{`
         @keyframes pulse {
           0%, 100% { transform: scale(1); }

@@ -115,8 +115,6 @@ function GamePage() {
   };
 
   const { gameMode } = useParams();
-  console.log("Modo de juego:", gameMode);
-
   const { width, height } = useWindowSize();
 
   // Estados para sopa de letras (modo4)
