@@ -55,7 +55,7 @@ async function fetchQuestions(gameMode) {
   }
 
   const shuffled = Ejemplos.sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, 1); // ToDo: cambiar a 10
+  const selected = shuffled.slice(0, 10);
 
   const questions = selected.map((correctItem) => {
     const incorrectOptions = Ejemplos
@@ -145,7 +145,7 @@ function GamePage() {
           const w = data
             .map((item) => item.word.toUpperCase())
             .sort(() => Math.random() - 0.5)
-            .slice(0, 5); // ToDo: cambiar a 5
+            .slice(0, 5);
           setWords(w);
         }
         setLoadingWords(false);
@@ -202,8 +202,6 @@ function GamePage() {
     }
     return <WordSearch words={words} gridSize={12} />;
   }
-
-  // Modos 1,2,3: juego de preguntas
 
   if (loading) {
     return (

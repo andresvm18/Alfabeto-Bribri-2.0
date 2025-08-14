@@ -198,18 +198,10 @@ function Character() {
               </Box>
 
               <Box p={4}>
-                <Flex align="center" justify="center">
+                <Flex align="center" justify="center" mb={3}>
                   <Text color="black" lineHeight="1">
                     {renderHighlightedWord(word.word)}
                   </Text>
-                </Flex>
-
-                <Flex align="center" justify="center" mb={3} minH="40px">
-                  {word.interpretation ? (
-                    <Text color="teal.800">{word.interpretation}</Text>
-                  ) : (
-                    <Text color="transparent">.</Text>
-                  )}
                 </Flex>
 
                 <Button

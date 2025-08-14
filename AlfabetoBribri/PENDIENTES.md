@@ -15,9 +15,6 @@ Este archivo documenta las tareas pendientes para el proyecto.
 - [ ] **Realizar documentación interna**  
   Realizar comentarios dentro del código para facilitar la interpretación y mantenibilidad del código para futuros desarrolladores.
 
-- [ ] **Quitar  la interpretación de las palabras en español**  
-  Comentar el código donde se encuentra la interpretación
-
 - [ ] **Esperar imágenes de Laura**  
   Faltan las imágenes de las pantallas principales.
 
@@ -34,6 +31,9 @@ Este archivo documenta las tareas pendientes para el proyecto.
 
 ## Tareas Completadas
 
+- [X] **Quitar  la interpretación de las palabras en español**  
+  Eliminar la traducción de la palabra
+  
 - [X] **Agregar más vocales a la sopa de letras**  
   Incluir vocales adicionales para ampliar la dificultad del juego.
 

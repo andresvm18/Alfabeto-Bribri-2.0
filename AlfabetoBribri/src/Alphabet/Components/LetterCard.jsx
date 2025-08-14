@@ -25,7 +25,7 @@ const LetterCard = ({ character, pronunciation, imageUrl }) => {
         _hover={{
           transform: "scale(1.05)",
           boxShadow: "lg",
-          borderColor: "#00C0F3", // Color azul claro en hover
+          borderColor: "#00C0F3",
           cursor: "pointer"
         }}
         userSelect="none"
@@ -56,7 +56,7 @@ const LetterCard = ({ character, pronunciation, imageUrl }) => {
                 fontSize="6rem"
                 lineHeight="1"
                 fontFamily="'Noto Sans', sans-serif"
-                color="black" // Cambiado a negro
+                color="black"
               >
                 {character}
               </Box>
@@ -70,7 +70,7 @@ const LetterCard = ({ character, pronunciation, imageUrl }) => {
           <Text
             fontSize="2xl"
             fontWeight="bold"
-            color="black" // Cambiado a negro
+            color="black"
             fontFamily="sans-serif"
           >
             {pronunciation}
