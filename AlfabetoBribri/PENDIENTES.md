@@ -12,21 +12,21 @@ Este archivo documenta las tareas pendientes para el proyecto.
 - [ ] **Agregar audios a la página principal**  
   Faltan algunos audios de incluir, solo que no los tenemos todavía.
 
-- [ ] **Realizar documentación interna**  
-  Realizar comentarios dentro del código para facilitar la interpretación y mantenibilidad del código para futuros desarrolladores.
-
 - [ ] **Esperar imágenes de Laura**  
   Faltan las imágenes de las pantallas principales.
 
 - [ ] **Manual de usuario**  
   Elaborar un documento con las instrucciones de uso del sistema.
 
-- [ ] **Corregir la tipografía**  
-  Cambiar las fuentes para que usen *Times New Roman* o *Arial* para que los acentos sean los correctos.
-
 ---
 
 ## Tareas Completadas
+
+- [X] **Realizar documentación interna**  
+  Realizar comentarios dentro del código para facilitar la interpretación y mantenibilidad del código para futuros desarrolladores.
+  
+- [X] **Corregir la tipografía**  
+  Cambiar las fuentes para que usen *Times New Roman* o *Arial* para que los acentos sean los correctos.
 
 - [X] **Poner en gris los "se'"**  
   Cambiar el color del texto `"se'"` a gris donde aparezca.

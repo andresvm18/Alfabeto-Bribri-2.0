@@ -26,7 +26,7 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
 
   const baseStyles = {
     w: "full",
-    minH: { base: "60px", md: "70px" }, // Altura mínima responsiva
+    minH: { base: "60px", md: "70px" },
     py: { base: 4, md: 6 },
     px: { base: 4, md: 8 },
     borderRadius: "xl",
@@ -109,7 +109,7 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
   };
 
   const getOptionLetter = (index) => {
-    return String.fromCharCode(65 + index); // A, B, C, D...
+    return String.fromCharCode(65 + index);
   };
 
   return (

@@ -59,7 +59,7 @@ function WordSearch({ words = [] }) {
       .fill(null)
       .map(() => Array(newGridSize).fill(null));
 
-    // Colocar palabras en la grilla
+    // Colocar palabras en la cuadrícula
     normalizedWords.forEach((word) => {
       const graphemes = splitter.splitGraphemes(word);
       let placed = false;

@@ -16,6 +16,9 @@ import { useParams } from "react-router-dom";
 import Lottie from "lottie-react";
 import errorAnimation from "../../Assets/Error.json";
 import { supabase } from "../../supabaseClient";
+import GraphemeSplitter from "grapheme-splitter";
+
+const splitter = new GraphemeSplitter();
 
 function Character() {
   const { letra } = useParams();
@@ -31,47 +34,41 @@ function Character() {
   const renderHighlightedWord = (word) => {
     const prefix = "seˈ";
     const normalizedPrefix = normalizeChar(prefix);
+    const normalizedWord = normalizeChar(word);
+    const normalizedLetter = normalizeChar(decodedLetter);
 
-    if (normalizeChar(word).startsWith(normalizedPrefix)) {
+    if (normalizedWord.startsWith(normalizedPrefix)) {
       return (
         <>
-          <chakra.span
-            fontWeight="normal"
-            fontSize="xl"
-            color="gray.400"
-          >
+          <chakra.span fontWeight="normal" fontSize="xl" color="gray.400">
             {word.slice(0, 3)}
           </chakra.span>
-          {word.slice(3).split("").map((char, i) => (
+          {splitter.splitGraphemes(word.slice(3)).map((grapheme, i) => (
             <chakra.span
               key={i}
               fontWeight={
-                normalizeChar(char) === normalizeChar(decodedLetter)
-                  ? "bold"
-                  : "normal"
+                normalizeChar(grapheme) === normalizedLetter ? "bold" : "normal"
               }
               fontSize="xl"
               color="black"
             >
-              {char}
+              {grapheme}
             </chakra.span>
           ))}
         </>
       );
     }
 
-    return word.split("").map((char, i) => (
+    return splitter.splitGraphemes(word).map((grapheme, i) => (
       <chakra.span
         key={i}
         fontWeight={
-          normalizeChar(char) === normalizeChar(decodedLetter)
-            ? "bold"
-            : "normal"
+          normalizeChar(grapheme) === normalizedLetter ? "bold" : "normal"
         }
         fontSize="xl"
         color="black"
       >
-        {char}
+        {grapheme}
       </chakra.span>
     ));
   };
@@ -247,7 +244,6 @@ function Character() {
                   fontSize="lg"
                 >
                 </Button>
-
               </Box>
             </Box>
           ))}

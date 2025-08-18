@@ -9,26 +9,26 @@ function GameHomePage() {
       key: "modo1",
       title: "¿Cómo se llama? (Imagen)",
       description: "Identifica la palabra bribrí que corresponde a la imagen mostrada.",
-      imageUrl: "/modo-imagen.jpg",
+      imageUrl: "/modo-imagen.jpg", // ToDo: cambiar la imagen cuando Laura la tenga lista
     },
     {
       key: "modo2",
       title: "¿Cómo se escribe? (Audio)",
       description: "Escucha el audio y selecciona la palabra escrita correctamente.",
-      imageUrl: "/modo-audio.jpg",
+      imageUrl: "/modo-audio.jpg", // ToDo: cambiar la imagen cuando Laura la tenga lista
     },
     {
       key: "modo3",
       title: "Examen mixto",
       description:
         "Mezcla aleatoria de imágenes y audios para probar todo tu conocimiento.",
-      imageUrl: "/modo-mixto.jpg",
+      imageUrl: "/modo-mixto.jpg", // ToDo: cambiar la imagen cuando Laura la tenga lista
     },
     {
       key: "modo4",
       title: "Sopa de letras",
       description: "Encuentra las palabras bribrí ocultas en una sopa de letras.",
-      imageUrl: "/modo-sopa-letras.jpg",
+      imageUrl: "/modo-sopa-letras.jpg", // ToDo: cambiar la imagen cuando Laura la tenga lista
     },
   ];
 

@@ -6,8 +6,8 @@ const config = {
 }
 
 const fonts = {
-  heading: `'Noto Sans', sans-serif`,
-  body: `'Noto Sans', sans-serif`,
+  heading: `'Arial', sans-serif`,
+  body: `'Arial', sans-serif`,
 }
 
 const theme = extendTheme({ config, fonts })

@@ -32,8 +32,8 @@ function useWindowSize() {
         height: window.innerHeight,
       });
     }
-    window.addEventListener("resize", handleResize); // Agrega el listener
-    return () => window.removeEventListener("resize", handleResize); // Limpia el listener
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return size;

@@ -22,7 +22,7 @@ function HomePage() {
   };
 
   return (
-    <Box 
+    <Box
       minH="100vh"
       bg="white"
       position="relative"
@@ -48,19 +48,19 @@ function HomePage() {
         bg="rgba(0, 0, 0, 0.03)"
         filter="blur(4px)"
       />
-      
-      <Box 
-        position="relative" 
+
+      <Box
+        position="relative"
         zIndex={1}
-        textAlign="center" 
-        py={20} 
+        textAlign="center"
+        py={20}
         px={6}
       >
         <VStack spacing={16}>
           <VStack spacing={6} mb={8}>
-            <Heading 
-              as="h1" 
-              size="2xl" 
+            <Heading
+              as="h1"
+              size="2xl"
               color="gray.800"
               fontWeight="bold"
               textShadow="2px 2px 4px rgba(0,0,0,0.1)"
@@ -70,10 +70,10 @@ function HomePage() {
             </Heading>
           </VStack>
 
-          <SimpleGrid 
-            columns={{ base: 1, lg: 2 }} 
-            spacing={12} 
-            maxW="1200px" 
+          <SimpleGrid
+            columns={{ base: 1, lg: 2 }}
+            spacing={12}
+            maxW="1200px"
             mx="auto"
             w="full"
           >
@@ -85,16 +85,17 @@ function HomePage() {
                 filter: "drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2))"
               }}
             >
-              <Box 
-                borderWidth="1px" 
-                borderRadius="lg" 
+              <Box
+                borderWidth="1px"
+                borderRadius="lg"
                 overflow="hidden"
                 borderColor="gray.200"
                 boxShadow="md"
                 userSelect="none"
                 bg="white"
               >
-                <Image 
+                <Image
+                  // ToDo: cambiar la imagen cuando Laura la tenga lista
                   src={Alphabet}
                   alt="Alfabeto"
                   width="100%"
@@ -102,13 +103,13 @@ function HomePage() {
                   objectFit="cover"
                   borderRadius="lg lg 0 0"
                 />
-                
+
                 <Box p={6}>
                   <Heading size="md" mb={2}>Alfabeto</Heading>
                   <Text mb={4}>
                     Explora el alfabeto completo con ilustraciones interactivas y pronunciación guiada para un aprendizaje efectivo.
                   </Text>
-                  
+
                   <Button as="a" href="/alfabeto" {...buttonStyles}>
                     Ver Alfabeto
                   </Button>
@@ -124,16 +125,17 @@ function HomePage() {
                 filter: "drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2))"
               }}
             >
-              <Box 
-                borderWidth="1px" 
-                borderRadius="lg" 
+              <Box
+                borderWidth="1px"
+                borderRadius="lg"
                 overflow="hidden"
                 borderColor="gray.200"
                 boxShadow="md"
                 userSelect="none"
                 bg="white"
               >
-                <Image 
+                <Image
+                  // ToDo: cambiar la imagen cuando Laura la tenga lista
                   src={Game}
                   alt="Aprende Jugando"
                   width="100%"
@@ -141,13 +143,13 @@ function HomePage() {
                   objectFit="cover"
                   borderRadius="lg lg 0 0"
                 />
-                
+
                 <Box p={6}>
                   <Heading size="md" mb={2}>Aprende Jugando</Heading>
                   <Text mb={4}>
                     Sumérgete en juegos educativos diseñados para hacer del aprendizaje una experiencia divertida y memorable.
                   </Text>
-                  
+
                   <Button as="a" href="/aprende" {...buttonStyles}>
                     Empezar a Jugar
                   </Button>
