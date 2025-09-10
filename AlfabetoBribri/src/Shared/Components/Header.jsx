@@ -24,7 +24,6 @@ function Header() {
   const links = [
     { label: 'Alfabeto', to: '/alfabeto' },
     { label: 'Aprende Jugando', to: '/aprende' },
-    { label: 'Equivalencias AFI', to: '/equivalencias-afi' },
     { label: 'Historia', to: '/historia' },
   ];
 

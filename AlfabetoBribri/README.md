@@ -19,8 +19,6 @@ Incluye distintos modos de juego con preguntas aleatorias basadas en **imágenes
   - **Retroalimentación inmediata** y animación **confeti** al acertar.
   - **Progreso y puntaje** visibles en todo momento.
   - **Pantalla final** con resumen, motivación y opción de volver a jugar.
-- **Equivalencias AFI:**
-  - Consulta el **Alfabeto Fonético Internacional (AFI)** con su **pronunciación**.
 - **Historia de la lengua:**
   - Breve reseña sobre la **historia y contexto cultural** de la lengua Bribrí.
 
@@ -41,10 +39,8 @@ Incluye distintos modos de juego con preguntas aleatorias basadas en **imágenes
 src/
 ├─ Alphabet/
 │ ├─ Components/
-│ │ ├─ AFICard.jsx
 │ │ └─ LetterCard.jsx
 │ ├─ Screens/
-│ │ ├─ AFIEquivalencies.jsx
 │ │ ├─ Alphabet.jsx
 │ │ └─ Character.jsx
 ├─ Game/
