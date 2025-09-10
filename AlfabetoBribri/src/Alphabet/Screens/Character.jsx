@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   Box,
   Heading,
@@ -8,11 +8,13 @@ import {
   Flex,
   SimpleGrid,
   Icon,
+  IconButton,
   Spinner,
-  chakra
+  chakra,
+  Tooltip,
 } from "@chakra-ui/react";
-import { FaVolumeUp } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { FaVolumeUp, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useParams, useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import errorAnimation from "../../Assets/Error.json";
 import { supabase } from "../../supabaseClient";
@@ -21,23 +23,24 @@ import GraphemeSplitter from "grapheme-splitter";
 const splitter = new GraphemeSplitter();
 
 function Character() {
+  const navigate = useNavigate();
   const { letra } = useParams();
-  const decodedLetter = decodeURIComponent(letra);
+  const decodedLetter = decodeURIComponent(letra ?? "");
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageLoaded, setImageLoaded] = useState({});
+  const [lettersList, setLettersList] = useState([]);
 
   const normalizeChar = (char) =>
     char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
   const renderHighlightedWord = (word) => {
     const prefix = "seˈ";
-    const normalizedPrefix = normalizeChar(prefix);
     const normalizedWord = normalizeChar(word);
     const normalizedLetter = normalizeChar(decodedLetter);
 
-    if (normalizedWord.startsWith(normalizedPrefix)) {
+    if (normalizedWord.startsWith(normalizeChar(prefix))) {
       return (
         <>
           <chakra.span fontWeight="normal" fontSize="xl" color="gray.400">
@@ -77,18 +80,109 @@ function Character() {
     new Audio(audioUrl).play();
   };
 
+  // Índice de la letra actual
+  const currentIndex = useMemo(
+    () => lettersList.findIndex((l) => l === decodedLetter),
+    [lettersList, decodedLetter]
+  );
+
+  const goToIndex = useCallback(
+    (idx) => {
+      if (!lettersList.length) return;
+      const wrapped =
+        ((idx % lettersList.length) + lettersList.length) % lettersList.length;
+      const nextLetter = lettersList[wrapped];
+
+      console.log(
+        `[Nav] de "${decodedLetter}" (idx ${currentIndex}) -> "${nextLetter}" (idx ${wrapped})`
+      );
+
+      navigate(`/caracter/${encodeURIComponent(nextLetter)}`);
+    },
+    [lettersList, navigate, decodedLetter, currentIndex]
+  );
+
+  const goPrev = useCallback(() => goToIndex(currentIndex - 1), [goToIndex, currentIndex]);
+  const goNext = useCallback(() => goToIndex(currentIndex + 1), [goToIndex, currentIndex]);
+
+  // Teclas de flecha para navegar
   useEffect(() => {
-    const fetchExamples = async () => {
+    const onKey = (e) => {
+      if (e.key === "ArrowLeft") {
+        console.log("[Key] ArrowLeft");
+        e.preventDefault();
+        goPrev();
+      } else if (e.key === "ArrowRight") {
+        console.log("[Key] ArrowRight");
+        e.preventDefault();
+        goNext();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [goPrev, goNext]);
+
+  // Log de letra actual e índice cada vez que cambian
+  useEffect(() => {
+    if (lettersList.length) {
+      console.log(
+        `[Alfabeto] letra actual: "${decodedLetter}" (index ${currentIndex} de ${lettersList.length})`
+      );
+    }
+  }, [decodedLetter, currentIndex, lettersList]);
+
+  // --- Funciones de ordenamiento por grupo y número ---
+  const GROUP_ORDER = { V: 0, C: 1, T: 2 }; // Prioridad: Vocales, Consonantes, Tonos
+  const parseId = (id) => {
+    const [grp, numStr] = String(id).split("-");
+    const num = parseInt(numStr, 10);
+    return {
+      grp,
+      num: Number.isFinite(num) ? num : Number.MAX_SAFE_INTEGER,
+      groupRank: GROUP_ORDER.hasOwnProperty(grp) ? GROUP_ORDER[grp] : 99,
+    };
+  };
+  const sortLetters = (arr) =>
+    [...arr].sort((a, b) => {
+      const pa = parseId(a.id);
+      const pb = parseId(b.id);
+      if (pa.groupRank !== pb.groupRank) return pa.groupRank - pb.groupRank;
+      return pa.num - pb.num;
+    });
+
+  // Cargar lista de letras + ejemplos de la letra actual (y ordenar)
+  useEffect(() => {
+    const fetchAll = async () => {
       setLoading(true);
       setError(null);
 
-      const { data: letters, error: letterError } = await supabase
+      const { data: lettersData, error: lettersErr } = await supabase
         .from("Alfabeto")
-        .select("id")
-        .eq("letter", decodedLetter)
-        .single();
+        .select("id, letter");
 
-      if (letterError || !letters) {
+      console.log(
+        "[Alfabeto] recibido (crudo):",
+        lettersData?.map((l) => ({ id: l.id, letter: l.letter })) ?? []
+      );
+
+      if (lettersErr || !lettersData?.length) {
+        setError("No se pudo cargar el alfabeto.");
+        setLoading(false);
+        return;
+      }
+
+      const sorted = sortLetters(lettersData);
+      console.log(
+        "[Alfabeto] ordenado (V->C->T y num):",
+        sorted.map((l) => ({ id: l.id, letter: l.letter }))
+      );
+
+      const onlyLetters = sorted.map((l) => l.letter);
+      console.log("[Alfabeto] lettersList (UI):", onlyLetters);
+      setLettersList(onlyLetters);
+
+      const current = sorted.find((l) => l.letter === decodedLetter);
+      if (!current) {
         setError(`No se encontró la letra: ${decodedLetter}`);
         setLoading(false);
         return;
@@ -97,23 +191,25 @@ function Character() {
       const { data: examplesData, error: examplesError } = await supabase
         .from("Ejemplos")
         .select("id, word, audio, image, interpretation")
-        .eq("letter_id", letters.id);
+        .eq("letter_id", current.id);
 
       if (examplesError) {
         setError("Error al obtener ejemplos.");
-      } else {
-        if (!examplesData || examplesData.length === 0) {
-          setError(`No hay ejemplos para la letra: ${decodedLetter}`);
-          setLoading(false);
-          return;
-        }
-        setExamples(examplesData);
+        setLoading(false);
+        return;
       }
 
+      if (!examplesData || examplesData.length === 0) {
+        setError(`No hay ejemplos para la letra: ${decodedLetter}`);
+        setLoading(false);
+        return;
+      }
+
+      setExamples(examplesData);
       setLoading(false);
     };
 
-    fetchExamples();
+    fetchAll();
   }, [decodedLetter]);
 
   const handleImageLoad = (id) => {
@@ -158,7 +254,7 @@ function Character() {
         p={4}
       >
         <Box boxSize="200px">
-          <Lottie animationData={errorAnimation} loop={true} />
+          <Lottie animationData={errorAnimation} loop />
         </Box>
         <Heading size="md" color="red.500" mt={4}>
           {error}
@@ -176,7 +272,46 @@ function Character() {
       display="flex"
       flexDirection="column"
       userSelect={"none"}
+      position="relative"
     >
+      {/* Flechas flotantes */}
+      {lettersList.length > 0 && currentIndex >= 0 && (
+        <>
+          <Tooltip label="Anterior (←)" hasArrow>
+            <IconButton
+              aria-label="Anterior"
+              icon={<FaChevronLeft />}
+              position="fixed"
+              left={{ base: 2, md: 6 }}
+              top="50%"
+              transform="translateY(-50%)"
+              zIndex={20}
+              colorScheme="cyan"
+              variant="solid"
+              onClick={goPrev}
+              size="lg"
+              borderRadius="full"
+            />
+          </Tooltip>
+          <Tooltip label="Siguiente (→)" hasArrow>
+            <IconButton
+              aria-label="Siguiente"
+              icon={<FaChevronRight />}
+              position="fixed"
+              right={{ base: 2, md: 6 }}
+              top="50%"
+              transform="translateY(-50%)"
+              zIndex={20}
+              colorScheme="cyan"
+              variant="solid"
+              onClick={goNext}
+              size="lg"
+              borderRadius="full"
+            />
+          </Tooltip>
+        </>
+      )}
+
       <Heading size="xl" mb={4} color="black">
         {decodedLetter}
       </Heading>
@@ -243,6 +378,7 @@ function Character() {
                   width="100%"
                   fontSize="lg"
                 >
+                  Escuchar
                 </Button>
               </Box>
             </Box>
