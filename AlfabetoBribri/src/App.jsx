@@ -8,12 +8,14 @@ import GameMode from "./Game/Screens/Game";
 import History from "./Shared/Screens/History";
 import Footer from "./Shared/Components/Footer";
 import { ToastContainer } from "react-toastify";
+import ScrollToTop from "./Shared/Components/ScrollToTop";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Header />
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/alfabeto" element={<Alphabet />} />
