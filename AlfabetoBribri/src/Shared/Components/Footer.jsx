@@ -19,7 +19,8 @@ import {
   FiUsers,
   FiCode,
   FiLayout,
-  FiGlobe
+  FiGlobe,
+  FiHeart
 } from 'react-icons/fi';
 import LogoUCR from "../../Assets/LogoUCR.png";
 
@@ -80,6 +81,7 @@ function Footer() {
                     {[
                       "Andrés Sebastián Víquez Marchena",
                       "Paula Melissa Camacho González",
+                      "Jorge "
                     ].map((name, index) => (
                       <Text key={index} fontSize="xs" color="gray.300" lineHeight="1.4">
                         {name}
@@ -126,7 +128,7 @@ function Footer() {
                 <HStack spacing={3}>
                   <Icon as={FiPhone} color="gray.400" boxSize={4} />
                   <Text fontSize="sm" color="gray.300">
-                    +506 8888 8888
+                    +506 XXXX XXXX
                   </Text>
                 </HStack>
 

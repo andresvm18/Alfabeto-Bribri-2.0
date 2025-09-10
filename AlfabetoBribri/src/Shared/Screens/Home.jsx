@@ -27,6 +27,7 @@ function HomePage() {
       bg="white"
       position="relative"
       overflow="hidden"
+      userSelect={"none"}
     >
       <Box
         position="absolute"

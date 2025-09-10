@@ -24,12 +24,6 @@ function GameHomePage() {
         "Mezcla aleatoria de imágenes y audios para probar todo tu conocimiento.",
       imageUrl: "/modo-mixto.jpg", // ToDo: cambiar la imagen cuando Laura la tenga lista
     },
-    {
-      key: "modo4",
-      title: "Sopa de letras",
-      description: "Encuentra las palabras bribrí ocultas en una sopa de letras.",
-      imageUrl: "/modo-sopa-letras.jpg", // ToDo: cambiar la imagen cuando Laura la tenga lista
-    },
   ];
 
   const mainColor = "#00C0F3";
@@ -52,10 +46,9 @@ function GameHomePage() {
 
         <Box
           display="grid"
-          gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)", xl: "repeat(4, 1fr)" }}
+          gridTemplateColumns={{ base: "1fr", md: "repeat(2, 1fr)", xl: "repeat(3, 1fr)" }}
           gap={10}
         >
-
           {modes.map(({ key, title, description, imageUrl }) => (
             <Box
               key={key}

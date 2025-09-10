@@ -16,7 +16,6 @@ import {
 import { FaTrophy, FaFont, FaGamepad } from "react-icons/fa";
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
-import WordSearch from "../Components/WordSearch";
 import { supabase } from "../../supabaseClient";
 
 function useWindowSize() {
@@ -130,28 +129,6 @@ function GamePage() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // Cargar sopa de letras si modo4
-  useEffect(() => {
-    if (gameMode === "modo4") {
-      async function loadWords() {
-        setLoadingWords(true);
-        let { data, error } = await supabase.from("Ejemplos").select("word");
-        if (error) {
-          console.error("Error fetching words for wordsearch:", error);
-          setWords([]);
-        } else {
-          const w = data
-            .map((item) => item.word.toUpperCase())
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 5);
-          setWords(w);
-        }
-        setLoadingWords(false);
-      }
-      loadWords();
-    }
-  }, [gameMode]);
-
   // Cargar preguntas para otros modos
   useEffect(() => {
     if (gameMode !== "modo4") {
@@ -169,37 +146,6 @@ function GamePage() {
       loadQuestions();
     }
   }, [gameMode]);
-
-  // Modo 4: mostrar sopa de letras
-  if (gameMode === "modo4") {
-    if (loadingWords) {
-      return (
-        <Container minH="100vh" centerContent justifyContent="center">
-          <VStack spacing={6}>
-            <Box
-              p={8}
-              borderRadius="2xl"
-              bg="white"
-              boxShadow="xl"
-              textAlign="center"
-            >
-              <Heading size="lg" color="gray.600">
-                Cargando sopa de letras...
-              </Heading>
-              <Progress
-                size="lg"
-                isIndeterminate
-                colorScheme="blue"
-                mt={6}
-                borderRadius="full"
-              />
-            </Box>
-          </VStack>
-        </Container>
-      );
-    }
-    return <WordSearch words={words} gridSize={12} />;
-  }
 
   if (loading) {
     return (
