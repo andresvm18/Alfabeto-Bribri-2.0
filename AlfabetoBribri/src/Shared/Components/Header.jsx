@@ -59,7 +59,7 @@ function Header() {
                 />
                 <VStack spacing={0} align="start">
                   <Heading
-                    size="lg"
+                    size={{ base: "md", xl: "lg" }}
                     fontWeight="bold"
                     letterSpacing="tight"
                     color="black"
@@ -86,7 +86,7 @@ function Header() {
                   mx={1}
                   borderRadius="md"
                   fontWeight="medium"
-                  fontSize="sm"
+                  fontSize={{ base: "sm", lg: "md", xl: "lg" }} 
                   position="relative"
                   bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
                   color="black"

@@ -14,6 +14,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { FaVolumeUp, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { MdTranslate } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import errorAnimation from "../../Assets/Error.json";
@@ -80,11 +81,16 @@ function Character() {
     new Audio(audioUrl).play();
   };
 
-  // Índice de la letra actual
   const currentIndex = useMemo(
     () => lettersList.findIndex((l) => l === decodedLetter),
     [lettersList, decodedLetter]
   );
+
+  const capitalizeFirst = (text) => {
+    if (!text) return "";
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };
+
 
   const goToIndex = useCallback(
     (idx) => {
@@ -277,7 +283,7 @@ function Character() {
       {/* Flechas flotantes */}
       {lettersList.length > 0 && currentIndex >= 0 && (
         <>
-          <Tooltip label="Anterior (←)" hasArrow>
+          <Tooltip label="Anterior" hasArrow>
             <IconButton
               aria-label="Anterior"
               icon={<FaChevronLeft />}
@@ -293,7 +299,7 @@ function Character() {
               borderRadius="full"
             />
           </Tooltip>
-          <Tooltip label="Siguiente (→)" hasArrow>
+          <Tooltip label="Siguiente" hasArrow>
             <IconButton
               aria-label="Siguiente"
               icon={<FaChevronRight />}
@@ -337,6 +343,18 @@ function Character() {
               display="flex"
               flexDirection="column"
             >
+              <Box display="flex" justifyContent="flex-end" p={2}>
+                <Tooltip label={capitalizeFirst(word.interpretation)} hasArrow>
+                  <IconButton
+                    aria-label="Ver interpretación"
+                    icon={<MdTranslate />}
+                    variant="ghost"
+                    colorScheme="cyan"
+                    size="md"
+                    onClick={() => handleInterpretation(word.id)}
+                  />
+                </Tooltip>
+              </Box>
               <Box
                 bg="white"
                 flex="1"
