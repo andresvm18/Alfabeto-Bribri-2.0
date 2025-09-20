@@ -22,9 +22,11 @@ function Header() {
   const location = useLocation(); // Hook para obtener la ruta actual
 
   const links = [
-    { label: 'Alfabeto', to: '/alfabeto' },
-    { label: 'Aprende Jugando', to: '/aprende' },
-    { label: 'Historia', to: '/historia' },
+    { label: 'Alfabeto bribri', to: '/alfabeto' },
+    { label: 'Práctica', to: '/aprende' },
+    { label: 'Sobre este recurso', to: '/recurso' }, // ToDo: Crear esta página
+    { label: 'Créditos', to: '/creditos' }, // ToDo: Crear esta página
+    { label: 'Acerca del TC-625', to: '/tc-625' }, // ToDo: Crear esta página
   ];
 
   const isActiveLink = (to) => location.pathname === to;
