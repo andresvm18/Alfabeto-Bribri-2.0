@@ -41,7 +41,7 @@ function Header() {
       width="100%"
     >
       <Box maxW="100%" mx="auto" px={{ base: 4, md: 6, lg: 8 }}>
-        <Flex h={20} alignItems="center" justifyContent="space-between">
+        <Flex  h={{ base: 24, md: 28 }} alignItems="center" justifyContent="space-between">
           <HStack spacing={4} align="center" flex="1">
             <Link
               as={RouterLink}
@@ -64,8 +64,15 @@ function Header() {
                     letterSpacing="tight"
                     color="black"
                   >
-                    Alfabeto Bribri
+                    Seˈ (uj)tö̀ shtók
                   </Heading>
+                  <Text
+                    fontSize={{ base: "xs", md: "sm", lg: "md" }}
+                    color="black"
+                    fontWeight="medium"
+                  >
+                    Alfabeto Bribri
+                  </Text>
                 </VStack>
               </HStack>
             </Link>
@@ -86,7 +93,7 @@ function Header() {
                   mx={1}
                   borderRadius="md"
                   fontWeight="medium"
-                  fontSize={{ base: "sm", lg: "md", xl: "lg" }} 
+                  fontSize={{ base: "sm", lg: "md", xl: "lg" }}
                   position="relative"
                   bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
                   color="black"
