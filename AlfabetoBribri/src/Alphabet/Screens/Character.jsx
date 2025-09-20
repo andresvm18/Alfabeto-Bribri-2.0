@@ -12,26 +12,36 @@ import {
   Spinner,
   chakra,
   Tooltip,
+  Tabs,
+  TabList,
+  Tab,
 } from "@chakra-ui/react";
 import { FaVolumeUp, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { MdTranslate } from "react-icons/md";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import Lottie from "lottie-react";
 import errorAnimation from "../../Assets/Error.json";
 import { supabase } from "../../supabaseClient";
 import GraphemeSplitter from "grapheme-splitter";
 
 const splitter = new GraphemeSplitter();
+const CAT_TO_INDEX = { vocal: 0, consonante: 1, tono: 2 };
+const INDEX_TO_CAT = ["vocal", "consonante", "tono"];
 
 function Character() {
   const navigate = useNavigate();
   const { letra } = useParams();
   const decodedLetter = decodeURIComponent(letra ?? "");
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const catParam = searchParams.get("cat") ?? "vocal";
+  const tabIndex = CAT_TO_INDEX[catParam] ?? 0;
+
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageLoaded, setImageLoaded] = useState({});
-  const [lettersList, setLettersList] = useState([]);
+  const [allLetters, setAllLetters] = useState([]); // {id, letter, type}
 
   const normalizeChar = (char) =>
     char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -81,74 +91,24 @@ function Character() {
     new Audio(audioUrl).play();
   };
 
-  const currentIndex = useMemo(
-    () => lettersList.findIndex((l) => l === decodedLetter),
-    [lettersList, decodedLetter]
-  );
-
   const capitalizeFirst = (text) => {
     if (!text) return "";
     return text.charAt(0).toUpperCase() + text.slice(1);
   };
 
-
-  const goToIndex = useCallback(
-    (idx) => {
-      if (!lettersList.length) return;
-      const wrapped =
-        ((idx % lettersList.length) + lettersList.length) % lettersList.length;
-      const nextLetter = lettersList[wrapped];
-
-      console.log(
-        `[Nav] de "${decodedLetter}" (idx ${currentIndex}) -> "${nextLetter}" (idx ${wrapped})`
-      );
-
-      navigate(`/caracter/${encodeURIComponent(nextLetter)}`);
-    },
-    [lettersList, navigate, decodedLetter, currentIndex]
-  );
-
-  const goPrev = useCallback(() => goToIndex(currentIndex - 1), [goToIndex, currentIndex]);
-  const goNext = useCallback(() => goToIndex(currentIndex + 1), [goToIndex, currentIndex]);
-
-  // Teclas de flecha para navegar
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "ArrowLeft") {
-        console.log("[Key] ArrowLeft");
-        e.preventDefault();
-        goPrev();
-      } else if (e.key === "ArrowRight") {
-        console.log("[Key] ArrowRight");
-        e.preventDefault();
-        goNext();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [goPrev, goNext]);
-
-  // Log de letra actual e índice cada vez que cambian
-  useEffect(() => {
-    if (lettersList.length) {
-      console.log(
-        `[Alfabeto] letra actual: "${decodedLetter}" (index ${currentIndex} de ${lettersList.length})`
-      );
-    }
-  }, [decodedLetter, currentIndex, lettersList]);
-
-  // --- Funciones de ordenamiento por grupo y número ---
-  const GROUP_ORDER = { V: 0, C: 1, T: 2 }; // Prioridad: Vocales, Consonantes, Tonos
+  const GROUP_ORDER = { V: 0, C: 1, T: 2 };
   const parseId = (id) => {
     const [grp, numStr] = String(id).split("-");
     const num = parseInt(numStr, 10);
     return {
       grp,
       num: Number.isFinite(num) ? num : Number.MAX_SAFE_INTEGER,
-      groupRank: GROUP_ORDER.hasOwnProperty(grp) ? GROUP_ORDER[grp] : 99,
+      groupRank: Object.prototype.hasOwnProperty.call(GROUP_ORDER, grp)
+        ? GROUP_ORDER[grp]
+        : 99,
     };
   };
-  const sortLetters = (arr) =>
+  const sortLetters = (arr = []) =>
     [...arr].sort((a, b) => {
       const pa = parseId(a.id);
       const pb = parseId(b.id);
@@ -156,39 +116,44 @@ function Character() {
       return pa.num - pb.num;
     });
 
-  // Cargar lista de letras + ejemplos de la letra actual (y ordenar)
   useEffect(() => {
-    const fetchAll = async () => {
+    const fetchLetters = async () => {
+      const { data, error } = await supabase
+        .from("Alfabeto")
+        .select("id, letter, type");
+      if (error || !data?.length) {
+        setError("No se pudo cargar el alfabeto.");
+        return;
+      }
+      setAllLetters(sortLetters(data));
+    };
+    fetchLetters();
+  }, []);
+
+  const lettersByCat = useMemo(() => {
+    return allLetters
+      .filter((l) =>
+        catParam === "vocal"
+          ? l.type === "vowel"
+          : catParam === "consonante"
+          ? l.type === "consonant"
+          : l.type === "tone"
+      )
+      .map((l) => l.letter);
+  }, [allLetters, catParam]);
+
+  const currentIndex = useMemo(
+    () => lettersByCat.findIndex((l) => l === decodedLetter),
+    [lettersByCat, decodedLetter]
+  );
+
+  useEffect(() => {
+    const fetchExamples = async () => {
       setLoading(true);
       setError(null);
 
-      const { data: lettersData, error: lettersErr } = await supabase
-        .from("Alfabeto")
-        .select("id, letter");
-
-      console.log(
-        "[Alfabeto] recibido (crudo):",
-        lettersData?.map((l) => ({ id: l.id, letter: l.letter })) ?? []
-      );
-
-      if (lettersErr || !lettersData?.length) {
-        setError("No se pudo cargar el alfabeto.");
-        setLoading(false);
-        return;
-      }
-
-      const sorted = sortLetters(lettersData);
-      console.log(
-        "[Alfabeto] ordenado (V->C->T y num):",
-        sorted.map((l) => ({ id: l.id, letter: l.letter }))
-      );
-
-      const onlyLetters = sorted.map((l) => l.letter);
-      console.log("[Alfabeto] lettersList (UI):", onlyLetters);
-      setLettersList(onlyLetters);
-
-      const current = sorted.find((l) => l.letter === decodedLetter);
-      if (!current) {
+      const currentMeta = allLetters.find((l) => l.letter === decodedLetter);
+      if (!currentMeta) {
         setError(`No se encontró la letra: ${decodedLetter}`);
         setLoading(false);
         return;
@@ -197,7 +162,7 @@ function Character() {
       const { data: examplesData, error: examplesError } = await supabase
         .from("Ejemplos")
         .select("id, word, audio, image, interpretation")
-        .eq("letter_id", current.id);
+        .eq("letter_id", currentMeta.id);
 
       if (examplesError) {
         setError("Error al obtener ejemplos.");
@@ -215,11 +180,71 @@ function Character() {
       setLoading(false);
     };
 
-    fetchAll();
-  }, [decodedLetter]);
+    if (allLetters.length) {
+      fetchExamples();
+    }
+  }, [decodedLetter, allLetters]);
 
   const handleImageLoad = (id) => {
     setImageLoaded((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const goToIndex = useCallback(
+    (idx) => {
+      if (!lettersByCat.length) return;
+      const wrapped =
+        ((idx % lettersByCat.length) + lettersByCat.length) %
+        lettersByCat.length;
+      const nextLetter = lettersByCat[wrapped];
+      navigate(`/caracter/${encodeURIComponent(nextLetter)}?cat=${catParam}`);
+    },
+    [lettersByCat, navigate, catParam]
+  );
+
+  const goPrev = useCallback(
+    () => goToIndex(currentIndex - 1),
+    [goToIndex, currentIndex]
+  );
+  const goNext = useCallback(
+    () => goToIndex(currentIndex + 1),
+    [goToIndex, currentIndex]
+  );
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goPrev();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goNext();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [goPrev, goNext]);
+
+  const handleTabChange = (i) => {
+    const nextCat = INDEX_TO_CAT[i] ?? "vocal";
+    setSearchParams({ cat: nextCat }, { replace: true });
+
+    const newList = allLetters.filter((l) =>
+      nextCat === "vocal"
+        ? l.type === "vowel"
+        : nextCat === "consonante"
+        ? l.type === "consonant"
+        : l.type === "tone"
+    );
+    const existsHere = newList.some((l) => l.letter === decodedLetter);
+    if (!existsHere && newList.length) {
+      navigate(
+        `/caracter/${encodeURIComponent(newList[0].letter)}?cat=${nextCat}`
+      );
+    }
+  };
+
+  const handleInterpretation = (id) => {
+    console.log("Ver interpretación de id:", id);
   };
 
   if (loading) {
@@ -273,136 +298,190 @@ function Character() {
     <Box
       minH="100vh"
       w="100%"
-      p={6}
-      textAlign="center"
-      display="flex"
-      flexDirection="column"
-      userSelect={"none"}
-      position="relative"
+      bg="gray.50"
+      userSelect="none"
     >
-      {/* Flechas flotantes */}
-      {lettersList.length > 0 && currentIndex >= 0 && (
-        <>
-          <Tooltip label="Anterior" hasArrow>
-            <IconButton
-              aria-label="Anterior"
-              icon={<FaChevronLeft />}
-              position="fixed"
-              left={{ base: 2, md: 6 }}
-              top="50%"
-              transform="translateY(-50%)"
-              zIndex={20}
-              colorScheme="cyan"
-              variant="solid"
-              onClick={goPrev}
-              size="lg"
-              borderRadius="full"
-            />
-          </Tooltip>
-          <Tooltip label="Siguiente" hasArrow>
-            <IconButton
-              aria-label="Siguiente"
-              icon={<FaChevronRight />}
-              position="fixed"
-              right={{ base: 2, md: 6 }}
-              top="50%"
-              transform="translateY(-50%)"
-              zIndex={20}
-              colorScheme="cyan"
-              variant="solid"
-              onClick={goNext}
-              size="lg"
-              borderRadius="full"
-            />
-          </Tooltip>
-        </>
-      )}
-
-      <Heading size="xl" mb={4} color="black">
-        {decodedLetter}
-      </Heading>
-
-      <Flex flex="1" direction="column" justifyContent="center">
-        <SimpleGrid
-          columns={{ base: 1, md: 3 }}
-          spacing={6}
-          maxW="1200px"
-          mx="auto"
-          width="100%"
+      {/* Caja BLANCA a pantalla completa */}
+      <Box
+        maxW="100%"
+        mx="0"
+        bg="white"
+        borderRadius="0"
+        boxShadow="none"
+        borderWidth="0"
+        minH="100vh"
+        p={{ base: 4, md: 6 }}
+      >
+        {/* Tabs internos de categoría */}
+        <Tabs
+          align="center"
+          variant="soft-rounded"
+          colorScheme="blackAlpha"
+          index={tabIndex}
+          onChange={handleTabChange}
         >
-          {examples.map((word) => (
-            <Box
-              key={word.id}
-              bg="white"
-              borderRadius="xl"
-              boxShadow="lg"
-              overflow="hidden"
-              borderWidth="1px"
-              borderColor="#00C0F3"
-              height="100%"
-              display="flex"
-              flexDirection="column"
-            >
-              <Box display="flex" justifyContent="flex-end" p={2}>
-                <Tooltip label={capitalizeFirst(word.interpretation)} hasArrow>
-                  <IconButton
-                    aria-label="Ver interpretación"
-                    icon={<MdTranslate />}
-                    variant="ghost"
-                    colorScheme="cyan"
-                    size="md"
-                    onClick={() => handleInterpretation(word.id)}
-                  />
-                </Tooltip>
-              </Box>
-              <Box
-                bg="white"
-                flex="1"
-                position="relative"
-                minH="250px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Image
-                  src={word.image}
-                  alt={`Imagen de ${word.word}`}
-                  width="80%"
-                  height="80%"
-                  objectFit="contain"
-                  borderRadius="md"
+          <TabList mb={4}>
+            <Tab color="black" _selected={{ color: "white", bg: "#00C0F3" }}>
+              Vocales
+            </Tab>
+            <Tab color="black" _selected={{ color: "white", bg: "#00C0F3" }}>
+              Consonantes
+            </Tab>
+            <Tab color="black" _selected={{ color: "white", bg: "#00C0F3" }}>
+              Tonos
+            </Tab>
+          </TabList>
+        </Tabs>
+
+        {/* Cabecera de la letra */}
+        <Heading size="xl" mb={4} color="black" textAlign="center">
+          {decodedLetter}
+        </Heading>
+
+        {/* Layout con flechas sticky + contenido */}
+        <Flex gap={4}>
+          {/* Flecha izquierda */}
+          <Box
+            position="sticky"
+            top="calc(50vh - 28px)"
+            alignSelf="flex-start"
+            display={{ base: "none", md: "block" }}
+          >
+            <Tooltip label="Anterior" hasArrow>
+              <IconButton
+                aria-label="Anterior"
+                icon={<FaChevronLeft />}
+                colorScheme="cyan"
+                variant="solid"
+                onClick={goPrev}
+                size="lg"
+                borderRadius="full"
+              />
+            </Tooltip>
+          </Box>
+
+          {/* Contenido central */}
+          <Box flex="1">
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+              {examples.map((word) => (
+                <Box
+                  key={word.id}
                   bg="white"
-                  opacity={imageLoaded[word.id] ? 1 : 0}
-                  transition="opacity 0.5s ease-in-out"
-                  onLoad={() => handleImageLoad(word.id)}
-                />
-              </Box>
-
-              <Box p={4}>
-                <Flex align="center" justify="center" mb={3}>
-                  <Text color="black" lineHeight="1">
-                    {renderHighlightedWord(word.word)}
-                  </Text>
-                </Flex>
-
-                <Button
-                  bg="#00C0F3"
-                  _hover={{ bg: "#00A8D9", transform: "scale(1.05)" }}
-                  color="white"
-                  size="lg"
-                  height="50px"
-                  onClick={() => playAudio(word.audio)}
-                  leftIcon={<Icon as={FaVolumeUp} boxSize={5} />}
-                  width="100%"
-                  fontSize="lg"
+                  borderRadius="xl"
+                  boxShadow="md"
+                  overflow="hidden"
+                  borderWidth="1px"
+                  borderColor="#00C0F3"
+                  height="100%"
+                  display="flex"
+                  flexDirection="column"
                 >
-                  Escuchar
-                </Button>
-              </Box>
-            </Box>
-          ))}
-        </SimpleGrid>
-      </Flex>
+                  <Box display="flex" justifyContent="flex-end" p={2}>
+                    <Tooltip label={capitalizeFirst(word.interpretation)} hasArrow>
+                      <IconButton
+                        aria-label="Ver interpretación"
+                        icon={<MdTranslate />}
+                        variant="ghost"
+                        colorScheme="cyan"
+                        size="md"
+                        onClick={() => handleInterpretation(word.id)}
+                      />
+                    </Tooltip>
+                  </Box>
+
+                  <Box
+                    bg="white"
+                    flex="1"
+                    position="relative"
+                    minH="250px"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Image
+                      src={word.image}
+                      alt={`Imagen de ${word.word}`}
+                      width="80%"
+                      height="80%"
+                      objectFit="contain"
+                      borderRadius="md"
+                      bg="white"
+                      opacity={imageLoaded[word.id] ? 1 : 0}
+                      transition="opacity 0.5s ease-in-out"
+                      onLoad={() =>
+                        setImageLoaded((prev) => ({ ...prev, [word.id]: true }))
+                      }
+                    />
+                  </Box>
+
+                  <Box p={4}>
+                    <Flex align="center" justify="center" mb={3}>
+                      <Text color="black" lineHeight="1">
+                        {renderHighlightedWord(word.word)}
+                      </Text>
+                    </Flex>
+
+                    <Button
+                      bg="#00C0F3"
+                      _hover={{ bg: "#00A8D9", transform: "scale(1.05)" }}
+                      color="white"
+                      size="lg"
+                      height="50px"
+                      onClick={() => playAudio(word.audio)}
+                      leftIcon={<Icon as={FaVolumeUp} boxSize={5} />}
+                      width="100%"
+                      fontSize="lg"
+                    >
+                      Escuchar
+                    </Button>
+                  </Box>
+                </Box>
+              ))}
+            </SimpleGrid>
+          </Box>
+
+          {/* Flecha derecha */}
+          <Box
+            position="sticky"
+            top="calc(50vh - 28px)"
+            alignSelf="flex-start"
+            display={{ base: "none", md: "block" }}
+          >
+            <Tooltip label="Siguiente" hasArrow>
+              <IconButton
+                aria-label="Siguiente"
+                icon={<FaChevronRight />}
+                colorScheme="cyan"
+                variant="solid"
+                onClick={goNext}
+                size="lg"
+                borderRadius="full"
+              />
+            </Tooltip>
+          </Box>
+        </Flex>
+
+        {/* Controles móviles (abajo) */}
+        <Flex
+          mt={6}
+          gap={4}
+          justify="center"
+          display={{ base: "flex", md: "none" }}
+        >
+          <IconButton
+            aria-label="Anterior"
+            icon={<FaChevronLeft />}
+            colorScheme="cyan"
+            onClick={goPrev}
+          />
+          <IconButton
+            aria-label="Siguiente"
+            icon={<FaChevronRight />}
+            colorScheme="cyan"
+            onClick={goNext}
+          />
+        </Flex>
+      </Box>
     </Box>
   );
 }
