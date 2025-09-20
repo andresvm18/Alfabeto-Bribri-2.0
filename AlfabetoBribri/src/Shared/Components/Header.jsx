@@ -8,25 +8,24 @@ import {
   IconButton,
   useDisclosure,
   Stack,
-  Container,
   Text,
   Divider,
   Image,
 } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import LogoUCR from "../../Assets/FirmaUCR.png"
+import LogoUCR from "../../Assets/FirmaUCR.png";
 
 function Header() {
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Para el menú móvil
-  const location = useLocation(); // Hook para obtener la ruta actual
+  const { isOpen, onOpen, onClose } = useDisclosure(); 
+  const location = useLocation(); 
 
   const links = [
     { label: 'Alfabeto bribri', to: '/alfabeto' },
     { label: 'Práctica', to: '/aprende' },
-    { label: 'Sobre este recurso', to: '/recurso' }, // ToDo: Crear esta página
-    { label: 'Créditos', to: '/creditos' }, // ToDo: Crear esta página
-    { label: 'Acerca del TC-625', to: '/tc-625' }, // ToDo: Crear esta página
+    { label: 'Sobre este recurso', to: '/recurso' }, 
+    { label: 'Créditos', to: '/creditos' }, 
+    { label: 'Acerca del TC-625', to: '/tc-625' }, 
   ];
 
   const isActiveLink = (to) => location.pathname === to;
@@ -43,7 +42,7 @@ function Header() {
       width="100%"
     >
       <Box maxW="100%" mx="auto" px={{ base: 4, md: 6, lg: 8 }}>
-        <Flex  h={{ base: 24, md: 28 }} alignItems="center" justifyContent="space-between">
+        <Flex h={{ base: 20, md: 24 }} alignItems="center" justifyContent="space-between">
           <HStack spacing={4} align="center" flex="1">
             <Link
               as={RouterLink}
@@ -56,12 +55,12 @@ function Header() {
                 <Image
                   src={LogoUCR}
                   alt="Logo UCR"
-                  height="40px"
+                  height="36px"
                   objectFit="contain"
                 />
                 <VStack spacing={0} align="start">
                   <Heading
-                    size={{ base: "md", xl: "lg" }}
+                    fontSize={{ base: "sm", md: "md", lg: "lg" }}
                     fontWeight="bold"
                     letterSpacing="tight"
                     color="black"
@@ -69,7 +68,7 @@ function Header() {
                     Seˈ (uj)tö̀ shtók
                   </Heading>
                   <Text
-                    fontSize={{ base: "xs", md: "sm", lg: "md" }}
+                    fontSize={{ base: "2xs", md: "xs", lg: "sm" }}
                     color="black"
                     fontWeight="medium"
                   >
@@ -83,19 +82,19 @@ function Header() {
               as="nav"
               spacing={0}
               display={{ base: 'none', md: 'flex' }}
-              ml={8}
+              ml={6}
             >
               {links.map((link) => (
                 <Link
                   key={link.to}
                   as={RouterLink}
                   to={link.to}
-                  px={4}
+                  px={3}
                   py={2}
-                  mx={1}
+                  mx={0.5}
                   borderRadius="md"
                   fontWeight="medium"
-                  fontSize={{ base: "sm", lg: "md", xl: "lg" }}
+                  fontSize={{ base: "xs", md: "sm", lg: "sm" }}
                   position="relative"
                   bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
                   color="black"
@@ -129,8 +128,8 @@ function Header() {
           </HStack>
 
           <IconButton
-            size="lg"
-            icon={isOpen ? <CloseIcon boxSize={4} color="black" /> : <HamburgerIcon boxSize={5} color="black" />}
+            size="md"
+            icon={isOpen ? <CloseIcon boxSize={3} color="black" /> : <HamburgerIcon boxSize={4} color="black" />}
             aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             display={{ md: 'none' }}
             onClick={isOpen ? onClose : onOpen}
@@ -165,7 +164,8 @@ function Header() {
                     to={link.to}
                     display="block"
                     px={4}
-                    py={3}
+                    py={2}
+                    fontSize="sm"
                     fontWeight="medium"
                     bg={isActiveLink(link.to) ? 'rgba(0,0,0,0.1)' : 'transparent'}
                     color="black"
@@ -192,10 +192,7 @@ function Header() {
                     </HStack>
                   </Link>
                   {index < links.length - 1 && (
-                    <Divider
-                      borderColor="rgba(0,0,0,0.1)"
-                      mx={4}
-                    />
+                    <Divider borderColor="rgba(0,0,0,0.1)" mx={4} />
                   )}
                 </Box>
               ))}
