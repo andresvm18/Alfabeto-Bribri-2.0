@@ -41,7 +41,7 @@ function Character() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageLoaded, setImageLoaded] = useState({});
-  const [allLetters, setAllLetters] = useState([]); // {id, letter, type}
+  const [allLetters, setAllLetters] = useState([]);
 
   const normalizeChar = (char) =>
     char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -54,7 +54,7 @@ function Character() {
     if (normalizedWord.startsWith(normalizeChar(prefix))) {
       return (
         <>
-          <chakra.span fontWeight="normal" fontSize="xl" color="gray.400">
+          <chakra.span fontWeight="normal" fontSize="lg" color="gray.400">
             {word.slice(0, 3)}
           </chakra.span>
           {splitter.splitGraphemes(word.slice(3)).map((grapheme, i) => (
@@ -63,7 +63,7 @@ function Character() {
               fontWeight={
                 normalizeChar(grapheme) === normalizedLetter ? "bold" : "normal"
               }
-              fontSize="xl"
+              fontSize="lg"
               color="black"
             >
               {grapheme}
@@ -79,7 +79,7 @@ function Character() {
         fontWeight={
           normalizeChar(grapheme) === normalizedLetter ? "bold" : "normal"
         }
-        fontSize="xl"
+        fontSize="lg"
         color="black"
       >
         {grapheme}
@@ -185,10 +185,6 @@ function Character() {
     }
   }, [decodedLetter, allLetters]);
 
-  const handleImageLoad = (id) => {
-    setImageLoaded((prev) => ({ ...prev, [id]: true }));
-  };
-
   const goToIndex = useCallback(
     (idx) => {
       if (!lettersByCat.length) return;
@@ -258,16 +254,17 @@ function Character() {
         justifyContent="center"
         bg="gray.50"
         userSelect="none"
+        p={{ base: 3, md: 6 }}
       >
         <Spinner
-          thickness="4px"
+          thickness={{ base: "3px", md: "4px" }}
           speed="0.65s"
           emptyColor="gray.200"
           color="#00C0F3"
-          size="xl"
-          mb={4}
+          size={{ base: "lg", md: "xl" }}
+          mb={{ base: 3, md: 4 }}
         />
-        <Heading as="h2" size="md" color="black">
+        <Heading as="h2" size={{ base: "sm", md: "md" }} color="black">
           Cargando...
         </Heading>
       </Box>
@@ -282,12 +279,12 @@ function Character() {
         align="center"
         minH="100vh"
         textAlign="center"
-        p={4}
+        p={{ base: 4, md: 8 }}
       >
-        <Box boxSize="200px">
+        <Box boxSize={{ base: "160px", md: "220px" }}>
           <Lottie animationData={errorAnimation} loop />
         </Box>
-        <Heading size="md" color="red.500" mt={4}>
+        <Heading size={{ base: "sm", md: "md" }} color="red.500" mt={{ base: 3, md: 4 }}>
           {error}
         </Heading>
       </Flex>
@@ -295,13 +292,7 @@ function Character() {
   }
 
   return (
-    <Box
-      minH="100vh"
-      w="100%"
-      bg="gray.50"
-      userSelect="none"
-    >
-      {/* Caja BLANCA a pantalla completa */}
+    <Box minH="100vh" w="100%" bg="gray.50" userSelect="none">
       <Box
         maxW="100%"
         mx="0"
@@ -310,9 +301,8 @@ function Character() {
         boxShadow="none"
         borderWidth="0"
         minH="100vh"
-        p={{ base: 4, md: 6 }}
+        p={{ base: 3, md: 6 }}
       >
-        {/* Tabs internos de categoría */}
         <Tabs
           align="center"
           variant="soft-rounded"
@@ -320,30 +310,45 @@ function Character() {
           index={tabIndex}
           onChange={handleTabChange}
         >
-          <TabList mb={4}>
-            <Tab color="black" _selected={{ color: "white", bg: "#00C0F3" }}>
+          <TabList mb={{ base: 3, md: 4 }}>
+            <Tab
+              color="black"
+              _selected={{ color: "white", bg: "#00C0F3" }}
+              fontSize={{ base: "sm", md: "md" }}
+              py={{ base: 1, md: 2 }}
+              px={{ base: 3, md: 4 }}
+            >
               Vocales
             </Tab>
-            <Tab color="black" _selected={{ color: "white", bg: "#00C0F3" }}>
+            <Tab
+              color="black"
+              _selected={{ color: "white", bg: "#00C0F3" }}
+              fontSize={{ base: "sm", md: "md" }}
+              py={{ base: 1, md: 2 }}
+              px={{ base: 3, md: 4 }}
+            >
               Consonantes
             </Tab>
-            <Tab color="black" _selected={{ color: "white", bg: "#00C0F3" }}>
+            <Tab
+              color="black"
+              _selected={{ color: "white", bg: "#00C0F3" }}
+              fontSize={{ base: "sm", md: "md" }}
+              py={{ base: 1, md: 2 }}
+              px={{ base: 3, md: 4 }}
+            >
               Tonos
             </Tab>
           </TabList>
         </Tabs>
 
-        {/* Cabecera de la letra */}
-        <Heading size="xl" mb={4} color="black" textAlign="center">
+        <Heading size={{ base: "lg", md: "xl" }} mb={{ base: 3, md: 5 }} color="black" textAlign="center">
           {decodedLetter}
         </Heading>
 
-        {/* Layout con flechas sticky + contenido */}
-        <Flex gap={4}>
-          {/* Flecha izquierda */}
+        <Flex gap={{ base: 3, md: 4 }}>
           <Box
             position="sticky"
-            top="calc(50vh - 28px)"
+            top={{ base: "calc(50vh - 24px)", md: "calc(50vh - 28px)" }}
             alignSelf="flex-start"
             display={{ base: "none", md: "block" }}
           >
@@ -354,21 +359,20 @@ function Character() {
                 colorScheme="cyan"
                 variant="solid"
                 onClick={goPrev}
-                size="lg"
+                size={{ base: "md", md: "lg" }}
                 borderRadius="full"
               />
             </Tooltip>
           </Box>
 
-          {/* Contenido central */}
           <Box flex="1">
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+            <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={{ base: 4, md: 6 }}>
               {examples.map((word) => (
                 <Box
                   key={word.id}
                   bg="white"
-                  borderRadius="xl"
-                  boxShadow="md"
+                  borderRadius={{ base: "lg", md: "xl" }}
+                  boxShadow={{ base: "sm", md: "md" }}
                   overflow="hidden"
                   borderWidth="1px"
                   borderColor="#00C0F3"
@@ -376,14 +380,14 @@ function Character() {
                   display="flex"
                   flexDirection="column"
                 >
-                  <Box display="flex" justifyContent="flex-end" p={2}>
+                  <Box display="flex" justifyContent="flex-end" p={{ base: 2, md: 3 }}>
                     <Tooltip label={capitalizeFirst(word.interpretation)} hasArrow>
                       <IconButton
                         aria-label="Ver interpretación"
                         icon={<MdTranslate />}
                         variant="ghost"
                         colorScheme="cyan"
-                        size="md"
+                        size={{ base: "sm", md: "md" }}
                         onClick={() => handleInterpretation(word.id)}
                       />
                     </Tooltip>
@@ -393,46 +397,54 @@ function Character() {
                     bg="white"
                     flex="1"
                     position="relative"
-                    minH="250px"
+                    minH={{ base: "180px", md: "220px" }}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
+                    px={{ base: 2, md: 4 }}
                   >
                     <Image
                       src={word.image}
                       alt={`Imagen de ${word.word}`}
-                      width="80%"
-                      height="80%"
+                      width={{ base: "70%", md: "85%" }}
+                      height={{ base: "70%", md: "85%" }}
                       objectFit="contain"
-                      borderRadius="md"
+                      borderRadius={{ base: "md", md: "lg" }}
                       bg="white"
                       opacity={imageLoaded[word.id] ? 1 : 0}
-                      transition="opacity 0.5s ease-in-out"
+                      transition="opacity 0.4s ease-in-out"
                       onLoad={() =>
                         setImageLoaded((prev) => ({ ...prev, [word.id]: true }))
                       }
                     />
                   </Box>
 
-                  <Box p={4}>
-                    <Flex align="center" justify="center" mb={3}>
-                      <Text color="black" lineHeight="1">
+                  <Box p={{ base: 3, md: 4 }}>
+                    <Flex align="center" justify="center" mb={{ base: 2, md: 3 }}>
+                      <Text
+                        color="black"
+                        lineHeight="1.1"
+                        fontSize={{ base: "lg", md: "xl" }}
+                      >
                         {renderHighlightedWord(word.word)}
                       </Text>
                     </Flex>
 
                     <Button
                       bg="#00C0F3"
-                      _hover={{ bg: "#00A8D9", transform: "scale(1.05)" }}
+                      _hover={{
+                        bg: "#00A8D9",
+                        transform: { base: "scale(1.03)", md: "scale(1.04)" },
+                      }}
                       color="white"
-                      size="lg"
-                      height="50px"
+                      size={{ base: "md", md: "lg" }}
+                      height={{ base: "42px", md: "48px" }}
                       onClick={() => playAudio(word.audio)}
-                      leftIcon={<Icon as={FaVolumeUp} boxSize={5} />}
+                      leftIcon={<Icon as={FaVolumeUp} boxSize={{ base: 4, md: 5 }} />}
                       width="100%"
-                      fontSize="lg"
+                      fontSize={{ base: "md", md: "lg" }}
                     >
-                      Escuchar
+                      <chakra.span srOnly>Reproducir audio</chakra.span>
                     </Button>
                   </Box>
                 </Box>
@@ -440,10 +452,9 @@ function Character() {
             </SimpleGrid>
           </Box>
 
-          {/* Flecha derecha */}
           <Box
             position="sticky"
-            top="calc(50vh - 28px)"
+            top={{ base: "calc(50vh - 24px)", md: "calc(50vh - 28px)" }}
             alignSelf="flex-start"
             display={{ base: "none", md: "block" }}
           >
@@ -454,32 +465,21 @@ function Character() {
                 colorScheme="cyan"
                 variant="solid"
                 onClick={goNext}
-                size="lg"
+                size={{ base: "md", md: "lg" }}
                 borderRadius="full"
               />
             </Tooltip>
           </Box>
         </Flex>
 
-        {/* Controles móviles (abajo) */}
         <Flex
-          mt={6}
-          gap={4}
+          mt={{ base: 5, md: 6 }}
+          gap={{ base: 3, md: 4 }}
           justify="center"
           display={{ base: "flex", md: "none" }}
         >
-          <IconButton
-            aria-label="Anterior"
-            icon={<FaChevronLeft />}
-            colorScheme="cyan"
-            onClick={goPrev}
-          />
-          <IconButton
-            aria-label="Siguiente"
-            icon={<FaChevronRight />}
-            colorScheme="cyan"
-            onClick={goNext}
-          />
+          <IconButton aria-label="Anterior" icon={<FaChevronLeft />} colorScheme="cyan" size="sm" onClick={goPrev} />
+          <IconButton aria-label="Siguiente" icon={<FaChevronRight />} colorScheme="cyan" size="sm" onClick={goNext} />
         </Flex>
       </Box>
     </Box>
