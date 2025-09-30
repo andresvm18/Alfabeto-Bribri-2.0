@@ -51,13 +51,13 @@ function Footer() {
                 <HStack spacing={2}>
                   <Icon as={FiGlobe} color="teal.300" />
                   <Text fontSize="lg" fontWeight="semibold" color="white">
-                    Alfabeto Bribrí
+                    Alfabeto bribri
                   </Text>
                 </HStack>
 
                 <Text fontSize="sm" color="gray.300" lineHeight="1.6" maxW="300px">
                   Plataforma educativa desarrollada por TC-625 Lenguas y tradiciones orales de Costa Rica
-                  dedicada a preservar, enseñar y promover  el idioma Bribri, contribuyendo a la conservación del patrimonio
+                  dedicada a preservar, enseñar y promover  el idioma bribri, contribuyendo a la conservación del patrimonio
                   cultural costarricense.
                 </Text>
               </VStack>
@@ -160,7 +160,7 @@ function Footer() {
             gap={4}
           >
             <Text fontSize="sm" color="gray.400" textAlign="center">
-              &copy; {currentYear} Alfabeto Bribri.
+              &copy; {currentYear} Alfabeto bribri.
             </Text>
 
           </Flex>

@@ -1,4 +1,4 @@
-# Lista de Pendientes - Proyecto de Juego Educativo Bribri
+# Lista de Pendientes - Proyecto de Juego Educativo bribri
 
 Este archivo documenta las tareas pendientes para el proyecto.
 

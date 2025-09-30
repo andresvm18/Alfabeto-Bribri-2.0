@@ -21,6 +21,7 @@ function Header() {
   const location = useLocation(); 
 
   const links = [
+    { label: 'Inicio', to: '/' },
     { label: 'Alfabeto bribri', to: '/alfabeto' },
     { label: 'Práctica', to: '/aprende' },
     { label: 'Sobre este recurso', to: '/recurso' }, 
@@ -72,7 +73,7 @@ function Header() {
                     color="black"
                     fontWeight="medium"
                   >
-                    Alfabeto Bribri
+                    Alfabeto bribri
                   </Text>
                 </VStack>
               </HStack>

@@ -109,7 +109,7 @@ function Alphabet() {
         textAlign="center"
         mb={4}
       >
-        Alfabeto Bribri
+        Alfabeto bribri
       </Text>
 
       <Tabs
