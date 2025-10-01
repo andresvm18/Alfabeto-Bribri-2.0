@@ -65,7 +65,7 @@ const LetterCard = ({ character, pronunciation, imageUrl }) => {
         </CardHeader>
         <CardBody>
           <Text fontSize="lg" color="gray.600">
-            Pronunciación:
+            Símbolo AFI
           </Text>
           <Text
             fontSize="2xl"
