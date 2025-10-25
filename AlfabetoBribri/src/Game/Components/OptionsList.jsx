@@ -43,7 +43,8 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
       left: "-100%",
       width: "100%",
       height: "100%",
-      background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+      background:
+        "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
       transition: "left 0.5s ease",
     },
   };
@@ -116,44 +117,36 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
     <Box w="full">
       <style jsx>{`
         @keyframes pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-          100% { transform: scale(1); }
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+          100% {
+            transform: scale(1);
+          }
         }
         @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-          20%, 40%, 60%, 80% { transform: translateX(3px); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          10%,
+          30%,
+          50%,
+          70%,
+          90% {
+            transform: translateX(-3px);
+          }
+          20%,
+          40%,
+          60%,
+          80% {
+            transform: translateX(3px);
+          }
         }
       `}</style>
-
-      {selected !== null && (
-        <Box
-          mb={6}
-          p={4}
-          borderRadius="xl"
-          bg={selected === correctAnswer ? "green.50" : "red.50"}
-          border="1px solid"
-          borderColor={selected === correctAnswer ? "green.200" : "red.200"}
-          textAlign="center"
-          animation="fadeIn 0.3s ease-in-out"
-          userSelect={"none"}
-        >
-          <Text
-            color={selected === correctAnswer ? "green.600" : "red.600"}
-            fontWeight="bold"
-            fontSize="lg"
-          >
-            {selected === correctAnswer
-              ? "¡Excelente! Respuesta correcta 🎉"
-              : `Incorrecto. La respuesta correcta es: ${correctAnswer} 📚`}
-          </Text>
-        </Box>
-      )}
 
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4} w="full">
         {options.map((option, idx) => {
@@ -175,10 +168,10 @@ function OptionsList({ options, correctAnswer, onAnswer, disabled }) {
                     selected === null
                       ? "#00C0F3"
                       : option === correctAnswer
-                        ? "green.600"
-                        : option === selected
-                          ? "red.600"
-                          : "gray.400"
+                      ? "green.600"
+                      : option === selected
+                      ? "red.600"
+                      : "gray.400"
                   }
                   color="white"
                   display="flex"
