@@ -15,7 +15,6 @@ import {
   Tabs,
   TabList,
   Tab,
-  Progress,
 } from "@chakra-ui/react";
 import { FaVolumeUp, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { MdTranslate } from "react-icons/md";
@@ -34,16 +33,25 @@ function Character() {
   const { letra } = useParams();
   const decodedLetter = decodeURIComponent(letra ?? "");
 
-  // Solo leemos los query params (ya no usamos setSearchParams aquí)
   const [searchParams] = useSearchParams();
-  const catParam = searchParams.get("cat") ?? "vocal";
-  const tabIndex = CAT_TO_INDEX[catParam] ?? 0;
+  const rawCat = searchParams.get("cat");
+  const catParam = (rawCat && rawCat in CAT_TO_INDEX) ? rawCat : "vocal";
+  const tabIndex = CAT_TO_INDEX[catParam];
 
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageLoaded, setImageLoaded] = useState({});
   const [allLetters, setAllLetters] = useState([]);
+
+  // Normaliza ?cat (si entra inválido) para que tabIndex sea consistente
+  useEffect(() => {
+    if (!rawCat || !(rawCat in CAT_TO_INDEX)) {
+      // Redirige a la misma letra pero con cat normalizado
+      navigate(`/caracter/${encodeURIComponent(decodedLetter)}?cat=${catParam}`, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawCat, decodedLetter]);
 
   const normalizeChar = (char) =>
     char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -222,7 +230,7 @@ function Character() {
     return () => window.removeEventListener("keydown", onKey);
   }, [goPrev, goNext]);
 
-  // ⬇️ NUEVO: al cambiar de tab, redirige al menú de alfabeto con la categoría elegida
+  // Al cambiar de tab aquí, redirige al menú de alfabeto con la categoría elegida.
   const handleTabChange = (i) => {
     const nextCat = INDEX_TO_CAT[i] ?? "vocal";
     navigate(`/alfabeto?cat=${nextCat}`);
@@ -377,7 +385,7 @@ function Character() {
                         variant="ghost"
                         colorScheme="cyan"
                         size={{ base: "sm", md: "md" }}
-                        onClick={() => handleInterpretation(word.id)}
+                        onClick={() => console.log("Ver interpretación de id:", word.id)}
                       />
                     </Tooltip>
                   </Box>
