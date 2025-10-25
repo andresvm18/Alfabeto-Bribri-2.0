@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Confetti from "react-confetti";
 import {
   Box,
   VStack,
@@ -17,26 +16,6 @@ import { FaTrophy, FaFont, FaGamepad } from "react-icons/fa";
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
 import { supabase } from "../../supabaseClient";
-
-function useWindowSize() {
-  const [size, setSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
-  useEffect(() => {
-    function handleResize() {
-      setSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return size;
-}
 
 async function fetchQuestions(gameMode) {
   let { data: Ejemplos, error } = await supabase
@@ -109,7 +88,6 @@ function GamePage() {
   };
 
   const { gameMode } = useParams();
-  const { width, height } = useWindowSize();
 
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +95,6 @@ function GamePage() {
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     if (gameMode !== "modo4") {
@@ -129,7 +106,6 @@ function GamePage() {
         setScore(0);
         setShowFeedback(false);
         setIsCorrect(null);
-        setShowConfetti(false);
         setLoading(false);
       }
       loadQuestions();
@@ -254,7 +230,7 @@ function GamePage() {
                 }}
                 _active={{ transform: "translateY(0)" }}
                 transition="all 0.2s ease"
-                onClick={() => window.location.href = "/alfabeto"}
+                onClick={() => (window.location.href = "/alfabeto")}
               >
                 Alfabeto
               </Button>
@@ -296,11 +272,7 @@ function GamePage() {
 
     if (isCorrectAnswer) {
       setScore((prev) => prev + 1);
-      setShowConfetti(true);
-
-      setTimeout(() => {
-        setShowConfetti(false);
-      }, 3000);
+      // Confetti eliminado
     }
   };
 
@@ -309,7 +281,6 @@ function GamePage() {
       setCurrentIndex((prev) => prev + 1);
       setShowFeedback(false);
       setIsCorrect(null);
-      setShowConfetti(false);
     } else {
       setCurrentIndex(questions.length);
     }
@@ -324,18 +295,6 @@ function GamePage() {
       position="relative"
       overflow="hidden"
     >
-      {showConfetti && (
-        <Confetti
-          width={width}
-          height={height}
-          recycle={false}
-          numberOfPieces={300}
-          gravity={0.3}
-          initialVelocityX={{ min: -10, max: 10 }}
-          initialVelocityY={{ min: -10, max: 10 }}
-        />
-      )}
-
       <Container maxW="4xl">
         <VStack spacing={8}>
           <Box
