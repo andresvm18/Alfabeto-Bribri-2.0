@@ -6,13 +6,13 @@ import {
   Heading,
   Button,
   Text,
-  Progress,
   Container,
-  Badge,
-  Flex,
   Icon,
+  Flex,
+  Badge,
+  Progress,
 } from "@chakra-ui/react";
-import { FaTrophy, FaFont, FaGamepad, FaArrowRight } from "react-icons/fa"; // ← agregado FaArrowRight
+import { FaTrophy, FaFont, FaGamepad, FaArrowRight } from "react-icons/fa";
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
 import { supabase } from "../../supabaseClient";
@@ -157,7 +157,6 @@ function GamePage() {
             borderColor="gray.200"
             p={12}
             textAlign="center"
-            transform="scale(1)"
           >
             <VStack spacing={8}>
               <Icon as={FaTrophy} boxSize={16} color="gold" />
@@ -187,15 +186,6 @@ function GamePage() {
                     {score} / {questions.length}
                   </Badge>
                 </Flex>
-
-                <Progress
-                  value={(score / questions.length) * 100}
-                  size="lg"
-                  colorScheme={score >= questions.length * 0.7 ? "green" : "red"}
-                  borderRadius="full"
-                  bg="gray.100"
-                  mb={6}
-                />
               </Box>
 
               <Text
@@ -222,7 +212,7 @@ function GamePage() {
                 borderRadius="full"
                 fontSize="lg"
                 fontWeight="bold"
-                leftIcon={<Icon as={FaFont} />} 
+                leftIcon={<Icon as={FaFont} />}
                 _hover={{
                   bg: "#0099CC",
                   transform: "translateY(-2px)",
@@ -296,47 +286,6 @@ function GamePage() {
     >
       <Container maxW="4xl">
         <VStack spacing={8}>
-          <Box
-            w="full"
-            bg="white"
-            borderRadius="2xl"
-            p={4}
-            boxShadow="lg"
-            border="1px solid"
-            borderColor="gray.100"
-          >
-            <VStack spacing={2} userSelect="none">
-              <Flex w="full" justifyContent="space-between" alignItems="center">
-                <Heading size="md" color="gray.700">
-                  Pregunta {currentIndex + 1} de {questions.length}
-                </Heading>
-                <Badge
-                  colorScheme="blue"
-                  fontSize="sm"
-                  px={3}
-                  py={1}
-                  borderRadius="full"
-                >
-                  Puntos: {score}
-                </Badge>
-              </Flex>
-
-              <Box w="full">
-                <Progress
-                  value={((currentIndex + 1) / questions.length) * 100}
-                  size="sm"
-                  colorScheme="blue"
-                  borderRadius="full"
-                  bg="gray.100"
-                  transition="all 0.3s ease"
-                />
-                <Text fontSize="xs" color="gray.500" textAlign="center" mt={1}>
-                  {Math.round(((currentIndex + 1) / questions.length) * 100)}%
-                  completado
-                </Text>
-              </Box>
-            </VStack>
-          </Box>
 
           <Box
             w="full"
@@ -346,7 +295,7 @@ function GamePage() {
             boxShadow="xl"
             border="1px solid"
             borderColor="gray.100"
-            transition="all 0.3s ease"
+            transition="all 0.2s ease"
             _hover={{ boxShadow: "2xl" }}
           >
             <VStack spacing={8}>
@@ -387,9 +336,7 @@ function GamePage() {
                     transition="all 0.2s ease"
                     onClick={handleNext}
                   >
-                    {currentIndex < questions.length - 1
-                      ? ""
-                      : "Ver resultados"}
+                    {currentIndex < questions.length - 1 ? "" : "Ver resultados"}
                   </Button>
                 </Box>
               )}
