@@ -112,6 +112,13 @@ function GamePage() {
     }
   }, [gameMode]);
 
+  // 👇 NUEVO: cada vez que cambia la pregunta, sube al inicio
+  useEffect(() => {
+    if (!loading) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentIndex, loading]);
+
   if (loading) {
     return (
       <Container minH="100vh" centerContent justifyContent="center">
@@ -286,7 +293,6 @@ function GamePage() {
     >
       <Container maxW="4xl">
         <VStack spacing={8}>
-
           <Box
             w="full"
             bg="white"
