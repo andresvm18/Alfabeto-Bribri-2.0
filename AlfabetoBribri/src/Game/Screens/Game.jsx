@@ -39,7 +39,6 @@ function useWindowSize() {
 }
 
 async function fetchQuestions(gameMode) {
-  // Obtiene las preguntas desde Supabase
   let { data: Ejemplos, error } = await supabase
     .from("Ejemplos")
     .select("word, audio, image");
@@ -81,10 +80,6 @@ async function fetchQuestions(gameMode) {
     return {
       type,
       source,
-      instructions:
-        type === "image"
-          ? "Selecciona la palabra correcta para la imagen."
-          : "Escucha el audio y selecciona la palabra correcta.",
       options: shuffleArray([correctItem.word, ...incorrectOptions]),
       correctAnswer: correctItem.word,
     };
@@ -116,11 +111,6 @@ function GamePage() {
   const { gameMode } = useParams();
   const { width, height } = useWindowSize();
 
-  // Estados para sopa de letras (modo4)
-  const [words, setWords] = useState([]);
-  const [loadingWords, setLoadingWords] = useState(true);
-
-  // Estados para preguntas (modo1, 2, 3)
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -129,7 +119,6 @@ function GamePage() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // Cargar preguntas para otros modos
   useEffect(() => {
     if (gameMode !== "modo4") {
       async function loadQuestions() {
@@ -406,7 +395,6 @@ function GamePage() {
               <QuestionDisplay
                 type={currentQuestion.type}
                 source={currentQuestion.source}
-                instructions={currentQuestion.instructions}
               />
 
               <OptionsList
