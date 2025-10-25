@@ -15,6 +15,7 @@ import {
   Tabs,
   TabList,
   Tab,
+  Progress,
 } from "@chakra-ui/react";
 import { FaVolumeUp, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { MdTranslate } from "react-icons/md";
@@ -33,7 +34,8 @@ function Character() {
   const { letra } = useParams();
   const decodedLetter = decodeURIComponent(letra ?? "");
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  // Solo leemos los query params (ya no usamos setSearchParams aquí)
+  const [searchParams] = useSearchParams();
   const catParam = searchParams.get("cat") ?? "vocal";
   const tabIndex = CAT_TO_INDEX[catParam] ?? 0;
 
@@ -220,23 +222,10 @@ function Character() {
     return () => window.removeEventListener("keydown", onKey);
   }, [goPrev, goNext]);
 
+  // ⬇️ NUEVO: al cambiar de tab, redirige al menú de alfabeto con la categoría elegida
   const handleTabChange = (i) => {
     const nextCat = INDEX_TO_CAT[i] ?? "vocal";
-    setSearchParams({ cat: nextCat }, { replace: true });
-
-    const newList = allLetters.filter((l) =>
-      nextCat === "vocal"
-        ? l.type === "vowel"
-        : nextCat === "consonante"
-        ? l.type === "consonant"
-        : l.type === "tone"
-    );
-    const existsHere = newList.some((l) => l.letter === decodedLetter);
-    if (!existsHere && newList.length) {
-      navigate(
-        `/caracter/${encodeURIComponent(newList[0].letter)}?cat=${nextCat}`
-      );
-    }
+    navigate(`/alfabeto?cat=${nextCat}`);
   };
 
   const handleInterpretation = (id) => {
