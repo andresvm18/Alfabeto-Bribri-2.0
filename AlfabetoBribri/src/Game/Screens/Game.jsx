@@ -12,7 +12,7 @@ import {
   Badge,
   Progress,
 } from "@chakra-ui/react";
-import { FaTrophy, FaFont, FaGamepad, FaArrowRight } from "react-icons/fa";
+import { FaFont, FaGamepad, FaArrowRight } from "react-icons/fa";
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
 import { supabase } from "../../supabaseClient";
@@ -72,21 +72,6 @@ function shuffleArray(array) {
 }
 
 function GamePage() {
-  const getScoreColor = (score, total) => {
-    const percentage = (score / total) * 100;
-    if (percentage === 0) return "red.500";
-    if (percentage >= 80) return "green.500";
-    if (percentage >= 60) return "yellow.500";
-    return "red.500";
-  };
-
-  const getScoreMessage = (score, total) => {
-    const percentage = (score / total) * 100;
-    if (percentage >= 80) return "¡Excelente trabajo! 🎉";
-    if (percentage >= 60) return "¡Buen trabajo! 👍";
-    return "Sigue practicando 💪";
-  };
-
   const { gameMode } = useParams();
 
   const [questions, setQuestions] = useState([]);
@@ -112,7 +97,7 @@ function GamePage() {
     }
   }, [gameMode]);
 
-  // 👇 NUEVO: cada vez que cambia la pregunta, sube al inicio
+  // Scroll al inicio cuando cambia la pregunta
   useEffect(() => {
     if (!loading) {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -146,6 +131,7 @@ function GamePage() {
     );
   }
 
+  // Pantalla final (resultado)
   if (currentIndex >= questions.length) {
     return (
       <Box
@@ -166,49 +152,31 @@ function GamePage() {
             textAlign="center"
           >
             <VStack spacing={8}>
-              <Icon as={FaTrophy} boxSize={16} color="gold" />
-
-              <Heading size="2xl" color="gray.700">
-                ¡Juego terminado!
-              </Heading>
-
-              <Box>
-                <Flex
-                  alignItems="center"
-                  justifyContent="center"
-                  gap={4}
-                  mb={4}
+              {/* Resultado numérico (sin título ni emoji) */}
+              <Flex alignItems="center" justifyContent="center" gap={4} mb={4}>
+                <Badge
+                  fontSize="2xl"
+                  px={6}
+                  py={2}
+                  borderRadius="full"
+                  colorScheme={score >= questions.length * 0.7 ? "green" : "red"}
+                  variant="solid"
                 >
-                  <Text fontSize="2xl" fontWeight="bold" color="gray.600">
-                    Puntuación:
-                  </Text>
-                  <Badge
-                    fontSize="2xl"
-                    px={6}
-                    py={2}
-                    borderRadius="full"
-                    colorScheme={score >= questions.length * 0.7 ? "green" : "red"}
-                    variant="solid"
-                  >
-                    {score} / {questions.length}
-                  </Badge>
-                </Flex>
-              </Box>
+                  {score} / {questions.length}
+                </Badge>
+              </Flex>
 
-              <Text
-                fontSize="xl"
-                color={getScoreColor(score, questions.length)}
-                fontWeight="semibold"
-              >
-                {getScoreMessage(score, questions.length)}
-              </Text>
+              {/* Barra de porcentaje (opcional, sin texto motivacional) */}
+              <Progress
+                value={(score / questions.length) * 100}
+                size="lg"
+                colorScheme={score >= questions.length * 0.7 ? "green" : "red"}
+                borderRadius="full"
+                bg="gray.100"
+                mb={0}
+              />
 
-              <Text color="gray.600" fontSize="md" maxW="md">
-                {score >= questions.length * 0.7
-                  ? "¡Sigue así! Tu conocimiento es impresionante."
-                  : "No te desanimes, cada intento te hace mejor. ¡Inténtalo de nuevo!"}
-              </Text>
-
+              {/* Botones */}
               <Button
                 bg="#00C0F3"
                 color="white"
@@ -252,7 +220,7 @@ function GamePage() {
                 _active={{ transform: "translateY(0)" }}
                 transition="all 0.2s ease"
               >
-                Menú de juegos
+                Práctica
               </Button>
             </VStack>
           </Box>
@@ -261,6 +229,7 @@ function GamePage() {
     );
   }
 
+  // Pantalla del juego (preguntas)
   const currentQuestion = questions[currentIndex];
 
   const handleAnswer = (isCorrectAnswer) => {
