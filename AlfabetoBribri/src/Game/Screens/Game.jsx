@@ -12,7 +12,7 @@ import {
   Flex,
   Icon,
 } from "@chakra-ui/react";
-import { FaTrophy, FaFont, FaGamepad } from "react-icons/fa";
+import { FaTrophy, FaFont, FaGamepad, FaArrowRight } from "react-icons/fa"; // ← agregado FaArrowRight
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
 import { supabase } from "../../supabaseClient";
@@ -272,7 +272,6 @@ function GamePage() {
 
     if (isCorrectAnswer) {
       setScore((prev) => prev + 1);
-      // Confetti eliminado
     }
   };
 
@@ -374,6 +373,11 @@ function GamePage() {
                     borderRadius="full"
                     fontSize="lg"
                     fontWeight="bold"
+                    rightIcon={
+                      currentIndex < questions.length - 1 ? (
+                        <Icon as={FaArrowRight} boxSize={5} />
+                      ) : undefined
+                    }
                     _hover={{
                       bg: "#0099CC",
                       transform: "translateY(-2px)",
@@ -384,7 +388,7 @@ function GamePage() {
                     onClick={handleNext}
                   >
                     {currentIndex < questions.length - 1
-                      ? "Siguiente pregunta"
+                      ? ""
                       : "Ver resultados"}
                   </Button>
                 </Box>
