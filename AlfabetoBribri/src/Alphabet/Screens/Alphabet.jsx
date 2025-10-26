@@ -12,17 +12,25 @@ const INDEX_TO_CAT = ['vocal', 'consonante', 'tono'];
 
 function Alphabet() {
   const [letters, setLetters] = useState({
-    vowels: [],       // datos de BD: type === 'vowel'
-    consonants: [],   // datos de BD: type === 'consonant'
-    tones: [],        // datos de BD: type === 'tone'
+    vowels: [],
+    consonants: [],
+    tones: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   // categoría en español por defecto
-  const catParam = searchParams.get('cat') ?? 'vocal';
-  const tabIndex = CAT_TO_INDEX[catParam] ?? 0;
+  const rawCat = searchParams.get('cat');
+  const catParam = (rawCat && rawCat in CAT_TO_INDEX) ? rawCat : 'vocal';
+  const tabIndex = CAT_TO_INDEX[catParam];
+
+  // Normaliza ?cat si viene inválido o no viene
+  useEffect(() => {
+    if (!rawCat || !(rawCat in CAT_TO_INDEX)) {
+      setSearchParams({ cat: catParam }, { replace: true });
+    }
+  }, [rawCat, catParam, setSearchParams]);
 
   // Ordena por el número del id (no muta el arreglo original)
   const sortById = (arr = []) =>
@@ -56,7 +64,7 @@ function Alphabet() {
     fetchLetters();
   }, []);
 
-  // (opcional) lista actual según la categoría en español
+  // lista actual según la categoría en español
   const currentList = useMemo(() => {
     if (catParam === 'consonante') return letters.consonants;
     if (catParam === 'tono') return letters.tones;
@@ -149,7 +157,6 @@ function Alphabet() {
                     <Link
                       as={RouterLink}
                       key={letter.id}
-                      // link en español: ?cat=vocal|consonante|tono
                       to={`/caracter/${encodeURIComponent(letter.letter)}?cat=${cat}`}
                       _hover={{ textDecoration: 'none' }}
                     >

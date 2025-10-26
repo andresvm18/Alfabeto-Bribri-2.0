@@ -1,45 +1,23 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Confetti from "react-confetti";
 import {
   Box,
   VStack,
   Heading,
   Button,
   Text,
-  Progress,
   Container,
-  Badge,
-  Flex,
   Icon,
+  Flex,
+  Badge,
+  Progress,
 } from "@chakra-ui/react";
-import { FaTrophy, FaFont, FaGamepad } from "react-icons/fa";
+import { FaFont, FaGamepad, FaArrowRight } from "react-icons/fa";
 import QuestionDisplay from "../Components/QuestionDisplay";
 import OptionsList from "../Components/OptionsList";
 import { supabase } from "../../supabaseClient";
 
-function useWindowSize() {
-  const [size, setSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
-  useEffect(() => {
-    function handleResize() {
-      setSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return size;
-}
-
 async function fetchQuestions(gameMode) {
-  // Obtiene las preguntas desde Supabase
   let { data: Ejemplos, error } = await supabase
     .from("Ejemplos")
     .select("word, audio, image");
@@ -81,10 +59,6 @@ async function fetchQuestions(gameMode) {
     return {
       type,
       source,
-      instructions:
-        type === "image"
-          ? "Selecciona la palabra correcta para la imagen."
-          : "Escucha el audio y selecciona la palabra correcta.",
       options: shuffleArray([correctItem.word, ...incorrectOptions]),
       correctAnswer: correctItem.word,
     };
@@ -98,38 +72,15 @@ function shuffleArray(array) {
 }
 
 function GamePage() {
-  const getScoreColor = (score, total) => {
-    const percentage = (score / total) * 100;
-    if (percentage === 0) return "red.500";
-    if (percentage >= 80) return "green.500";
-    if (percentage >= 60) return "yellow.500";
-    return "red.500";
-  };
-
-  const getScoreMessage = (score, total) => {
-    const percentage = (score / total) * 100;
-    if (percentage >= 80) return "¡Excelente trabajo! 🎉";
-    if (percentage >= 60) return "¡Buen trabajo! 👍";
-    return "Sigue practicando 💪";
-  };
-
   const { gameMode } = useParams();
-  const { width, height } = useWindowSize();
 
-  // Estados para sopa de letras (modo4)
-  const [words, setWords] = useState([]);
-  const [loadingWords, setLoadingWords] = useState(true);
-
-  // Estados para preguntas (modo1, 2, 3)
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [showConfetti, setShowConfetti] = useState(false);
 
-  // Cargar preguntas para otros modos
   useEffect(() => {
     if (gameMode !== "modo4") {
       async function loadQuestions() {
@@ -140,12 +91,18 @@ function GamePage() {
         setScore(0);
         setShowFeedback(false);
         setIsCorrect(null);
-        setShowConfetti(false);
         setLoading(false);
       }
       loadQuestions();
     }
   }, [gameMode]);
+
+  // Scroll al inicio cuando cambia la pregunta
+  useEffect(() => {
+    if (!loading) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentIndex, loading]);
 
   if (loading) {
     return (
@@ -174,6 +131,7 @@ function GamePage() {
     );
   }
 
+  // Pantalla final (resultado)
   if (currentIndex >= questions.length) {
     return (
       <Box
@@ -192,61 +150,33 @@ function GamePage() {
             borderColor="gray.200"
             p={12}
             textAlign="center"
-            transform="scale(1)"
           >
             <VStack spacing={8}>
-              <Icon as={FaTrophy} boxSize={16} color="gold" />
-
-              <Heading size="2xl" color="gray.700">
-                ¡Juego terminado!
-              </Heading>
-
-              <Box>
-                <Flex
-                  alignItems="center"
-                  justifyContent="center"
-                  gap={4}
-                  mb={4}
-                >
-                  <Text fontSize="2xl" fontWeight="bold" color="gray.600">
-                    Puntuación:
-                  </Text>
-                  <Badge
-                    fontSize="2xl"
-                    px={6}
-                    py={2}
-                    borderRadius="full"
-                    colorScheme={score >= questions.length * 0.7 ? "green" : "red"}
-                    variant="solid"
-                  >
-                    {score} / {questions.length}
-                  </Badge>
-                </Flex>
-
-                <Progress
-                  value={(score / questions.length) * 100}
-                  size="lg"
-                  colorScheme={score >= questions.length * 0.7 ? "green" : "red"}
+              {/* Resultado numérico (sin título ni emoji) */}
+              <Flex alignItems="center" justifyContent="center" gap={4} mb={4}>
+                <Badge
+                  fontSize="2xl"
+                  px={6}
+                  py={2}
                   borderRadius="full"
-                  bg="gray.100"
-                  mb={6}
-                />
-              </Box>
+                  colorScheme={score >= questions.length * 0.7 ? "green" : "red"}
+                  variant="solid"
+                >
+                  {score} / {questions.length}
+                </Badge>
+              </Flex>
 
-              <Text
-                fontSize="xl"
-                color={getScoreColor(score, questions.length)}
-                fontWeight="semibold"
-              >
-                {getScoreMessage(score, questions.length)}
-              </Text>
+              {/* Barra de porcentaje (opcional, sin texto motivacional) */}
+              <Progress
+                value={(score / questions.length) * 100}
+                size="lg"
+                colorScheme={score >= questions.length * 0.7 ? "green" : "red"}
+                borderRadius="full"
+                bg="gray.100"
+                mb={0}
+              />
 
-              <Text color="gray.600" fontSize="md" maxW="md">
-                {score >= questions.length * 0.7
-                  ? "¡Sigue así! Tu conocimiento es impresionante."
-                  : "No te desanimes, cada intento te hace mejor. ¡Inténtalo de nuevo!"}
-              </Text>
-
+              {/* Botones */}
               <Button
                 bg="#00C0F3"
                 color="white"
@@ -257,7 +187,7 @@ function GamePage() {
                 borderRadius="full"
                 fontSize="lg"
                 fontWeight="bold"
-                leftIcon={<Icon as={FaFont} />} 
+                leftIcon={<Icon as={FaFont} />}
                 _hover={{
                   bg: "#0099CC",
                   transform: "translateY(-2px)",
@@ -265,7 +195,7 @@ function GamePage() {
                 }}
                 _active={{ transform: "translateY(0)" }}
                 transition="all 0.2s ease"
-                onClick={() => window.location.href = "/alfabeto"}
+                onClick={() => (window.location.href = "/alfabeto")}
               >
                 Alfabeto
               </Button>
@@ -290,7 +220,7 @@ function GamePage() {
                 _active={{ transform: "translateY(0)" }}
                 transition="all 0.2s ease"
               >
-                Menú de juegos
+                Práctica
               </Button>
             </VStack>
           </Box>
@@ -299,6 +229,7 @@ function GamePage() {
     );
   }
 
+  // Pantalla del juego (preguntas)
   const currentQuestion = questions[currentIndex];
 
   const handleAnswer = (isCorrectAnswer) => {
@@ -307,11 +238,6 @@ function GamePage() {
 
     if (isCorrectAnswer) {
       setScore((prev) => prev + 1);
-      setShowConfetti(true);
-
-      setTimeout(() => {
-        setShowConfetti(false);
-      }, 3000);
     }
   };
 
@@ -320,7 +246,6 @@ function GamePage() {
       setCurrentIndex((prev) => prev + 1);
       setShowFeedback(false);
       setIsCorrect(null);
-      setShowConfetti(false);
     } else {
       setCurrentIndex(questions.length);
     }
@@ -335,62 +260,8 @@ function GamePage() {
       position="relative"
       overflow="hidden"
     >
-      {showConfetti && (
-        <Confetti
-          width={width}
-          height={height}
-          recycle={false}
-          numberOfPieces={300}
-          gravity={0.3}
-          initialVelocityX={{ min: -10, max: 10 }}
-          initialVelocityY={{ min: -10, max: 10 }}
-        />
-      )}
-
       <Container maxW="4xl">
         <VStack spacing={8}>
-          <Box
-            w="full"
-            bg="white"
-            borderRadius="2xl"
-            p={4}
-            boxShadow="lg"
-            border="1px solid"
-            borderColor="gray.100"
-          >
-            <VStack spacing={2} userSelect="none">
-              <Flex w="full" justifyContent="space-between" alignItems="center">
-                <Heading size="md" color="gray.700">
-                  Pregunta {currentIndex + 1} de {questions.length}
-                </Heading>
-                <Badge
-                  colorScheme="blue"
-                  fontSize="sm"
-                  px={3}
-                  py={1}
-                  borderRadius="full"
-                >
-                  Puntos: {score}
-                </Badge>
-              </Flex>
-
-              <Box w="full">
-                <Progress
-                  value={((currentIndex + 1) / questions.length) * 100}
-                  size="sm"
-                  colorScheme="blue"
-                  borderRadius="full"
-                  bg="gray.100"
-                  transition="all 0.3s ease"
-                />
-                <Text fontSize="xs" color="gray.500" textAlign="center" mt={1}>
-                  {Math.round(((currentIndex + 1) / questions.length) * 100)}%
-                  completado
-                </Text>
-              </Box>
-            </VStack>
-          </Box>
-
           <Box
             w="full"
             bg="white"
@@ -399,14 +270,13 @@ function GamePage() {
             boxShadow="xl"
             border="1px solid"
             borderColor="gray.100"
-            transition="all 0.3s ease"
+            transition="all 0.2s ease"
             _hover={{ boxShadow: "2xl" }}
           >
             <VStack spacing={8}>
               <QuestionDisplay
                 type={currentQuestion.type}
                 source={currentQuestion.source}
-                instructions={currentQuestion.instructions}
               />
 
               <OptionsList
@@ -427,6 +297,11 @@ function GamePage() {
                     borderRadius="full"
                     fontSize="lg"
                     fontWeight="bold"
+                    rightIcon={
+                      currentIndex < questions.length - 1 ? (
+                        <Icon as={FaArrowRight} boxSize={5} />
+                      ) : undefined
+                    }
                     _hover={{
                       bg: "#0099CC",
                       transform: "translateY(-2px)",
@@ -436,9 +311,7 @@ function GamePage() {
                     transition="all 0.2s ease"
                     onClick={handleNext}
                   >
-                    {currentIndex < questions.length - 1
-                      ? "Siguiente pregunta"
-                      : "Ver resultados"}
+                    {currentIndex < questions.length - 1 ? "" : "Ver resultados"}
                   </Button>
                 </Box>
               )}

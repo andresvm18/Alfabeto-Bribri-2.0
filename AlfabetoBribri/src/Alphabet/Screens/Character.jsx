@@ -33,15 +33,25 @@ function Character() {
   const { letra } = useParams();
   const decodedLetter = decodeURIComponent(letra ?? "");
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const catParam = searchParams.get("cat") ?? "vocal";
-  const tabIndex = CAT_TO_INDEX[catParam] ?? 0;
+  const [searchParams] = useSearchParams();
+  const rawCat = searchParams.get("cat");
+  const catParam = (rawCat && rawCat in CAT_TO_INDEX) ? rawCat : "vocal";
+  const tabIndex = CAT_TO_INDEX[catParam];
 
   const [examples, setExamples] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageLoaded, setImageLoaded] = useState({});
   const [allLetters, setAllLetters] = useState([]);
+
+  // Normaliza ?cat (si entra inválido) para que tabIndex sea consistente
+  useEffect(() => {
+    if (!rawCat || !(rawCat in CAT_TO_INDEX)) {
+      // Redirige a la misma letra pero con cat normalizado
+      navigate(`/caracter/${encodeURIComponent(decodedLetter)}?cat=${catParam}`, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawCat, decodedLetter]);
 
   const normalizeChar = (char) =>
     char.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -220,23 +230,10 @@ function Character() {
     return () => window.removeEventListener("keydown", onKey);
   }, [goPrev, goNext]);
 
+  // Al cambiar de tab aquí, redirige al menú de alfabeto con la categoría elegida.
   const handleTabChange = (i) => {
     const nextCat = INDEX_TO_CAT[i] ?? "vocal";
-    setSearchParams({ cat: nextCat }, { replace: true });
-
-    const newList = allLetters.filter((l) =>
-      nextCat === "vocal"
-        ? l.type === "vowel"
-        : nextCat === "consonante"
-        ? l.type === "consonant"
-        : l.type === "tone"
-    );
-    const existsHere = newList.some((l) => l.letter === decodedLetter);
-    if (!existsHere && newList.length) {
-      navigate(
-        `/caracter/${encodeURIComponent(newList[0].letter)}?cat=${nextCat}`
-      );
-    }
+    navigate(`/alfabeto?cat=${nextCat}`);
   };
 
   const handleInterpretation = (id) => {
@@ -388,7 +385,7 @@ function Character() {
                         variant="ghost"
                         colorScheme="cyan"
                         size={{ base: "sm", md: "md" }}
-                        onClick={() => handleInterpretation(word.id)}
+                        onClick={() => console.log("Ver interpretación de id:", word.id)}
                       />
                     </Tooltip>
                   </Box>
