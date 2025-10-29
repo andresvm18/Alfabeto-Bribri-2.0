@@ -81,7 +81,7 @@ function Footer() {
                     {[
                       "Andrés Sebastián Víquez Marchena",
                       "Paula Melissa Camacho González",
-                      "Jorge "
+                      "Jorge Quirós Anderson"
                     ].map((name, index) => (
                       <Text key={index} fontSize="xs" color="gray.300" lineHeight="1.4">
                         {name}
@@ -125,12 +125,12 @@ function Footer() {
                   </Text>
                 </HStack>
 
-                <HStack spacing={3}>
+                {/* <HStack spacing={3}>
                   <Icon as={FiPhone} color="gray.400" boxSize={4} />
                   <Text fontSize="sm" color="gray.300">
                     +506 XXXX XXXX
                   </Text>
-                </HStack>
+                </HStack> */}
 
                 <HStack spacing={3} align="flex-start">
                   <Icon as={FiMapPin} color="gray.400" boxSize={4} mt={0.5} />
