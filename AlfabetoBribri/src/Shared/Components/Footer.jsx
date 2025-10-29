@@ -99,6 +99,7 @@ function Footer() {
                   </HStack>
                   <VStack align="flex-start" spacing={2} pl={6}>
                     <Text fontSize="xs" color="gray.300">Laura Jesús Jiménez Cubillo</Text>
+                    <Text fontSize="xs" color="gray.300">Ashanti Poyser Chaves</Text>
                   </VStack>
                 </Box>
               </VStack>
