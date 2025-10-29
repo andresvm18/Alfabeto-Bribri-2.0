@@ -8,7 +8,6 @@ import {
   Card,
   CardBody,
   Stack,
-  List,
   ListItem,
   OrderedList,
 } from "@chakra-ui/react";
@@ -25,6 +24,9 @@ function Credits() {
       <Container maxW="4xl">
         {/* Encabezado */}
         <VStack spacing={4} textAlign="center" mb={2}>
+          <Heading size="2xl" color="black">
+            Créditos
+          </Heading>
           <Text fontSize={{ base: "md", md: "lg" }} color="gray.700">
             Reconocimientos a las personas y equipos que hicieron posible este recurso.
           </Text>
@@ -67,6 +69,10 @@ function Credits() {
                 <Heading size="md" color="black" mb={3}>
                   Ilustraciones
                 </Heading>
+
+                <Text color="gray.700" lineHeight="1.7" mb={3}>
+                  Laura Jiménez Cubillo, Ashanti Poyser Chaves
+                </Text>
 
                 <OrderedList spacing={3} pl={5} color="gray.800">
                   <ListItem>
