@@ -9,20 +9,22 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-
+import JuegoObservar from "../../Assets/JuegoObservar.jpg";
+import JuegoEscuchar from "../../Assets/JuegoEscuchar.jpg";
+import JuegoMixto from "../../Assets/JuegoMixto.jpg";
 function GameHomePage() {
   const modes = [
     {
       key: "modo1",
       title: "I sa̠ú̠. ¿Ì dir beˈ a̠ ta̠?",
       subtitle: "Observe. ¿Qué cree que es?",
-      imageUrl: "/modo-imagen.jpg",
+      imageUrl: JuegoObservar,
     },
     {
       key: "modo2",
       title: "I kí̠tsö́. ¿I chè ieˈ rö beˈ a̠ ta̠?",
       subtitle: "Escuche. ¿Qué cree que dice?",
-      imageUrl: "/modo-audio.jpg",
+      imageUrl: JuegoEscuchar,
     },
     {
       key: "modo3",
@@ -30,7 +32,7 @@ function GameHomePage() {
       subtitle: "Observe. ¿Qué cree que es?",
       title2: "I kí̠tsö́. ¿I chè ieˈ rö beˈ a̠ ta̠?",
       subtitle2: "Escuche. ¿Qué cree que dice?",
-      imageUrl: "/modo-mixto.jpg",
+      imageUrl: JuegoMixto,
     },
   ];
 
